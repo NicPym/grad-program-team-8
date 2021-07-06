@@ -1,0 +1,24 @@
+{
+  "development": {
+    "username": "root",
+    "password": "team8password",
+    "database": "team8database",
+    "host": "127.0.0.1",
+    "port": 5000,
+    "dialect": "mysql",
+    "define": {
+      "timestamps": false
+    }
+  },
+  "Docker": {
+    "username": "root",
+    "password": "team8password",
+    "database": "team8database",
+    "host": "db",
+    "port": 5000,
+    "dialect": "mysql",
+    "define": {
+      "timestamps": false
+    }
+  }
+}

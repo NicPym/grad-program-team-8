@@ -2,9 +2,10 @@ const express = require("express");
 const app = express();
 const helmet = require("helmet");
 const cors = require("cors");
-const path = require("path");
-const root = require("./util/root");
 const logger = require("./util/winston");
+const { sequelize } = require("./models");
+require("dotenv").config(".env");
+const authenticate = require("./util/authenticate");
 const port = 8080;
 
 app.use(helmet());
@@ -17,6 +18,8 @@ app.use(
   })
 );
 
+app.use("/auth", require("./routes/auth"));
+
 app.use((error, req, res, next) => {
   logger.log({
     logger: "error",
@@ -28,11 +31,23 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message: message, data: data, success: false });
 });
 
-const server = app.listen(port, () => {
-  logger.log({
-    logger: "info",
-    message: `[Index.js]\tServer listening at http://localhost:${port}.`,
+// Syncs tables to the db
+sequelize
+  // .sync({ alter: true })
+  .sync()
+  .then(() => {
+    const server = app.listen(port, () => {
+      logger.log({
+        logger: "info",
+        message: `[Index.js]\tServer listening at http://localhost:${port}.`,
+      });
+    });
+  })
+  .catch((error) => {
+    logger.log({
+      logger: "error",
+      message: "[Index]\t" + error,
+    });
   });
-});
 
 module.exports = app;
