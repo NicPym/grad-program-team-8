@@ -3,6 +3,9 @@ version: "3.1"
 services:
   db:
     image: mysql
+    command: --init-file /data/application/init.sql
+    volumes:
+      - ./init.sql:/data/application/init.sql
     environment:
       MYSQL_ROOT_PASSWORD: team8password
       MYSQL_DATABASE: team8database
