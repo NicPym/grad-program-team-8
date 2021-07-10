@@ -177,7 +177,7 @@ blogs.post("/:id/posts", authenticate, (req, res, next) => {
       res.json({
         id: post.pkPost,
         text: post.cText,
-        createdAt: post.createdAt,
+        createdAt: new Date().toISOString(),
       });
     })
     .catch((err) => next(err));
