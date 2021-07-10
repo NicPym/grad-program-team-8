@@ -129,11 +129,15 @@ blogs.get("/:id/posts", (req, res, next) => {
       } else {
         const { rows } = dataCleaner(posts);
 
-        res.json({
-          id: rows[0].pkBlog,
-          text: rows[0].cText,
-          createdAt: rows[0].createdAt,
-        });
+        res.json(
+          rows.map((row) => {
+            return {
+              id: row.pkBlog,
+              text: row.cText,
+              createdAt: row.createdAt,
+            };
+          })
+        );
       }
     })
     .catch((err) => next(err));
