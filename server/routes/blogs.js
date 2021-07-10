@@ -64,7 +64,7 @@ blogs.get("/:id", (req, res, next) => {
   })
     .then((blogs) => {
       if (blogs.length == 0) {
-        res.statusCode(404);
+        res.sendStatus(404);
       } else {
         const { rows } = dataCleaner(blogs);
 
@@ -112,7 +112,7 @@ blogs.get("/:id/posts", (req, res, next) => {
   })
     .then((blogs) => {
       if (blogs.length == 0) {
-        res.statusCode(404);
+        res.sendStatus(404);
       } else {
         const { rows } = dataCleaner(blogs);
 
@@ -175,6 +175,51 @@ blogs.post("/:id/posts", authenticate, (req, res, next) => {
         text: post.cText,
         createdAt: post.createdAt,
       });
+    })
+    .catch((err) => next(err));
+});
+
+blogs.post("/:id/subscribe", authenticate, (req, res, next) => {
+  models.Blog.findAll({
+    where: {
+      pkBlog: req.params.id,
+    },
+  })
+    .then((blogs) => {
+      if (blogs.length == 0) {
+        const error = new Error(
+          `Blog with id: ${req.params.id} does not exist`
+        );
+        error.statusCode = 400;
+        throw error;
+      } else {
+        return models.Subscription.findAll({
+          where: { fkUser: req.token.id, fkBlog: req.params.id },
+        });
+      }
+    })
+    .then((subscriptions) => {
+      if (subscriptions.length > 0) {
+        const error = new Error(
+          `Cannot subscribe to the same blog more than once`
+        );
+        error.statusCode = 400;
+        throw error;
+      } else {
+        return models.Subscription.create({
+          fkUser: req.token.id,
+          fkBlog: req.params.id,
+        });
+      }
+    })
+    .then((subscription) => {
+      return models.Blog.increment("iSubscriberCount", {
+        by: 1,
+        where: { pkBlog: subscription.fkBlog },
+      });
+    })
+    .then((_) => {
+      res.sendStatus(200);
     })
     .catch((err) => next(err));
 });

@@ -45,6 +45,10 @@ db.subscription.belongsTo(db.blog, {
   foreignKey: "fkBlog",
   targetKey: "pkBlog",
 });
+db.subscription.belongsTo(db.user, {
+  foreignKey: "fkUser",
+  targetKey: "pkUser",
+});
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
