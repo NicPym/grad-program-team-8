@@ -6,6 +6,11 @@ const { dataCleaner, formatDate } = require("../util/helpers");
 
 blogs.get("/", (req, res, next) => {
   models.Blog.findAll({
+    where: req.query.categoryId
+      ? {
+          fkCategory: req.query.categoryId,
+        }
+      : {},
     include: [
       {
         model: models.User,
@@ -33,6 +38,7 @@ blogs.get("/", (req, res, next) => {
             description: row.cDescription,
             subscriberCount: row.iSubscriberCount,
             owner: row.owner,
+            categoryId: row.fkCategory,
           };
         })
       );
@@ -41,7 +47,7 @@ blogs.get("/", (req, res, next) => {
 });
 
 blogs.get("/:id", (req, res, next) => {
-  models.Blog.findAll({
+  models.Blog.findOne({
     where: {
       pkBlog: req.params.id,
     },
@@ -62,17 +68,16 @@ blogs.get("/:id", (req, res, next) => {
       },
     ],
   })
-    .then((blogs) => {
-      if (blogs.length == 0) {
+    .then((blog) => {
+      if (!blog) {
         res.sendStatus(404);
       } else {
-        const { rows } = dataCleaner(blogs);
-
         res.json({
-          id: rows[0].pkBlog,
-          description: rows[0].cDescription,
-          subscriberCount: rows[0].iSubscriberCount,
-          owner: rows[0].owner,
+          id: blog.pkBlog,
+          description: blog.cDescription,
+          subscriberCount: blog.iSubscriberCount,
+          owner: blog.owner,
+          categoryId: blog.fkCategory,
         });
       }
     })
@@ -82,7 +87,7 @@ blogs.get("/:id", (req, res, next) => {
 blogs.post("/", authenticate, (req, res, next) => {
   const body = req.body;
 
-  if (!body.description) {
+  if (!(body.description && body.categoryId)) {
     const error = new Error("Data not formatted properly");
     error.statusCode = 400;
     throw error;
@@ -92,6 +97,7 @@ blogs.post("/", authenticate, (req, res, next) => {
     cDescription: body.description,
     iSubscriberCount: 0,
     fkUser: req.token.id,
+    fkCategory: body.categoryId,
   })
     .then((blog) => {
       res.json({
@@ -99,26 +105,25 @@ blogs.post("/", authenticate, (req, res, next) => {
         description: blog.cDescription,
         subscriberCount: blog.iSubscriberCount,
         owner: req.token.name,
+        categoryId: blog.fkCategory,
       });
     })
     .catch((err) => next(err));
 });
 
 blogs.get("/:id/posts", (req, res, next) => {
-  models.Blog.findAll({
+  models.Blog.findOne({
     where: {
       pkBlog: req.params.id,
     },
   })
-    .then((blogs) => {
-      if (blogs.length == 0) {
+    .then((blog) => {
+      if (!blog) {
         res.sendStatus(404);
       } else {
-        const { rows } = dataCleaner(blogs);
-
         return models.Post.findAll({
           where: {
-            fkBlog: rows[0].pkBlog,
+            fkBlog: blog.pkBlog,
           },
         });
       }
@@ -132,7 +137,7 @@ blogs.get("/:id/posts", (req, res, next) => {
         res.json(
           rows.map((row) => {
             return {
-              id: row.pkBlog,
+              id: row.pkPost,
               text: row.cText,
               createdAt: row.createdAt,
             };
@@ -152,24 +157,22 @@ blogs.post("/:id/posts", authenticate, (req, res, next) => {
     throw error;
   }
 
-  models.Blog.findAll({
+  models.Blog.findOne({
     where: {
       pkBlog: req.params.id,
     },
   })
-    .then((blogs) => {
-      if (blogs.length == 0) {
+    .then((blog) => {
+      if (!blog) {
         const error = new Error(
           `Blog with id: ${req.params.id} does not exist`
         );
         error.statusCode = 400;
         throw error;
       } else {
-        const { rows } = dataCleaner(blogs);
-
         return models.Post.create({
           cText: body.text,
-          fkBlog: rows[0].pkBlog,
+          fkBlog: blog.pkBlog,
         });
       }
     })
@@ -184,26 +187,26 @@ blogs.post("/:id/posts", authenticate, (req, res, next) => {
 });
 
 blogs.post("/:id/subscribe", authenticate, (req, res, next) => {
-  models.Blog.findAll({
+  models.Blog.findOne({
     where: {
       pkBlog: req.params.id,
     },
   })
-    .then((blogs) => {
-      if (blogs.length == 0) {
+    .then((blog) => {
+      if (!blog) {
         const error = new Error(
           `Blog with id: ${req.params.id} does not exist`
         );
         error.statusCode = 400;
         throw error;
       } else {
-        return models.Subscription.findAll({
+        return models.Subscription.findOne({
           where: { fkUser: req.token.id, fkBlog: req.params.id },
         });
       }
     })
-    .then((subscriptions) => {
-      if (subscriptions.length > 0) {
+    .then((subscription) => {
+      if (subscription) {
         const error = new Error(
           `Cannot subscribe to the same blog more than once`
         );
