@@ -20,7 +20,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(255),
         allowNull: false,
       },
-      cSaltedPassword: {
+      cSalt: {
+        type: DataTypes.STRING(128),
+        allowNull: false,
+      },
+      cHashedPassword: {
         type: DataTypes.STRING(256),
         allowNull: false,
       },

@@ -8,6 +8,9 @@ require("dotenv").config(".env");
 const authenticate = require("./util/authenticate");
 const port = 8080;
 
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
+
 app.use(helmet());
 
 app.use(

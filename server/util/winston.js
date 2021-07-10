@@ -32,6 +32,10 @@ class LoggerService {
             handleExceptions: true,
             zippedArchive: true,
           }),
+          new transports.Console({
+            handleExceptions: true,
+            colorize: true,
+          }),
         ],
         exitOnError: false,
       }),
