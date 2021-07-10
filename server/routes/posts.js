@@ -51,4 +51,22 @@ posts.put("/:id", authenticate, (req, res, next) => {
   .catch((err) => next(err));
 });
 
+posts.delete("/:id", authenticate, (req, res, next) => {
+
+  models.Post.findOne({
+    where: {
+      pkPost: req.params.id,
+    },
+  })
+  .then((post) => {
+
+    post.destroy()
+    .then((_) => {
+
+      res.sendStatus(200);
+    })
+  })
+  .catch((err) => next(err));
+});
+
 module.exports = posts;
