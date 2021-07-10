@@ -131,6 +131,24 @@ blogs.put("/:id", authenticate, (req, res, next) => {
   .catch((err) => next(err));
 });
 
+blogs.delete("/:id", authenticate, (req, res, next) => {
+
+  models.Blog.findOne({
+    where: {
+      pkBlog: req.params.id,
+    },
+  })
+  .then((blog) => {
+
+    blog.destroy()
+    .then((_) => {
+
+      res.sendStatus(200);
+    })
+  })
+  .catch((err) => next(err));
+});
+
 blogs.get("/:id/posts", (req, res, next) => {
   models.Blog.findAll({
     where: {
