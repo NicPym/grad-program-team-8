@@ -7,8 +7,8 @@ const { sequelize } = require("./models");
 require("dotenv").config(".env");
 const authenticate = require("./util/authenticate");
 const port = 8080;
-
 app.use(helmet());
+
 
 app.use(
   cors({
@@ -36,6 +36,7 @@ sequelize
   // .sync({ alter: true })
   .sync()
   .then(() => {
+    
     const server = app.listen(port, () => {
       logger.log({
         logger: "info",
@@ -44,6 +45,7 @@ sequelize
     });
   })
   .catch((error) => {
+    console.log(error)
     logger.log({
       logger: "error",
       message: "[Index]\t" + error,
