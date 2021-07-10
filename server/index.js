@@ -5,7 +5,6 @@ const cors = require("cors");
 const logger = require("./util/winston");
 const { sequelize } = require("./models");
 require("dotenv").config(".env");
-const authenticate = require("./util/authenticate");
 const port = 8080;
 
 app.use(express.json({ limit: "10mb" }));
@@ -22,6 +21,8 @@ app.use(
 );
 
 app.use("/auth", require("./routes/auth"));
+app.use("/blogs", require("./routes/blogs"));
+app.use("/posts", require("./routes/posts"));
 
 app.use((error, req, res, next) => {
   logger.log({
@@ -36,8 +37,8 @@ app.use((error, req, res, next) => {
 
 // Syncs tables to the db
 sequelize
-  // .sync({ alter: true })
-  .sync()
+  .sync({ alter: true })
+  // .sync()
   .then(() => {
     const server = app.listen(port, () => {
       logger.log({
