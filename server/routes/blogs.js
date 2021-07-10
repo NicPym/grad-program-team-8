@@ -104,6 +104,33 @@ blogs.post("/", authenticate, (req, res, next) => {
     .catch((err) => next(err));
 });
 
+blogs.put("/:id", authenticate, (req, res, next) => {
+  const body = req.body;
+
+  if (!body.newDescription) {
+    const error = new Error("Data not formatted properly");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  models.Blog.findOne({
+    where: {
+      pkBlog: req.params.id,
+    },
+  })
+  .then((blog) => {
+
+    blog.update({
+      cDescription: body.newDescription
+    })
+    .then((_) => {
+
+      res.sendStatus(200);
+    })
+  })
+  .catch((err) => next(err));
+});
+
 blogs.get("/:id/posts", (req, res, next) => {
   models.Blog.findAll({
     where: {
