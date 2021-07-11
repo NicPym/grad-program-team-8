@@ -6,11 +6,6 @@ const { dataCleaner, formatDate } = require("../util/helpers");
 
 blogs.get("/", (req, res, next) => {
   models.Blog.findAll({
-    where: req.query.categoryId
-      ? {
-          fkCategory: req.query.categoryId,
-        }
-      : {},
     include: [
       {
         model: models.User,
@@ -41,7 +36,6 @@ blogs.get("/", (req, res, next) => {
               description: row.cDescription,
               subscriberCount: row.iSubscriberCount,
               owner: row.owner,
-              categoryId: row.fkCategory,
             };
           })
         );
@@ -83,7 +77,6 @@ blogs.get("/:id", (req, res, next) => {
           description: blog.cDescription,
           subscriberCount: blog.iSubscriberCount,
           owner: blog.owner,
-          categoryId: blog.fkCategory,
         });
       }
     })
@@ -93,7 +86,7 @@ blogs.get("/:id", (req, res, next) => {
 blogs.post("/", authenticate, (req, res, next) => {
   const body = req.body;
 
-  if (!(body.description && body.categoryId)) {
+  if (!body.description) {
     const error = new Error("Data not formatted properly");
     error.statusCode = 400;
     throw error;
@@ -103,7 +96,6 @@ blogs.post("/", authenticate, (req, res, next) => {
     cDescription: body.description,
     iSubscriberCount: 0,
     fkUser: req.token.id,
-    fkCategory: body.categoryId,
   })
     .then((blog) => {
       res.json({
@@ -111,7 +103,6 @@ blogs.post("/", authenticate, (req, res, next) => {
         description: blog.cDescription,
         subscriberCount: blog.iSubscriberCount,
         owner: req.token.name,
-        categoryId: blog.fkCategory,
       });
     })
     .catch((err) => next(err));
@@ -150,7 +141,6 @@ blogs.put("/", authenticate, (req, res, next) => {
         description: blog.cDescription,
         subscriberCount: blog.iSubscriberCount,
         owner: req.token.name,
-        categoryId: blog.fkCategory,
       });
     })
     .catch((err) => next(err));
