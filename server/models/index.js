@@ -14,7 +14,6 @@ const db = {};
 db.user = require("./user")(sequelize, Sequelize.DataTypes);
 db.blog = require("./blog")(sequelize, Sequelize.DataTypes);
 db.post = require("./post")(sequelize, Sequelize.DataTypes);
-db.category = require("./category")(sequelize, Sequelize.DataTypes);
 db.subscription = require("./subscription")(sequelize, Sequelize.DataTypes);
 
 db.user.hasMany(db.blog, {
@@ -26,9 +25,16 @@ db.blog.belongsTo(db.user, {
   foreignKey: "fkUser",
   targetKey: "pkUser",
 });
+
 db.blog.hasMany(db.subscription, {
   foreignKey: "fkBlog",
   targetKey: "pkBlog",
+});
+
+db.blog.hasMany(db.post, {
+  foreignKey: "fkBlog",
+  targetKey: "pkBlog",
+  onDelete: "cascade",
 });
 
 db.post.belongsTo(db.blog, {
@@ -36,15 +42,11 @@ db.post.belongsTo(db.blog, {
   targetKey: "pkBlog",
 });
 
-db.category.hasMany(db.blog, {
-  foreignKey: "fkCategory",
-  targetKey: "pkCategory",
-});
-
 db.subscription.belongsTo(db.blog, {
   foreignKey: "fkBlog",
   targetKey: "pkBlog",
 });
+
 db.subscription.belongsTo(db.user, {
   foreignKey: "fkUser",
   targetKey: "pkUser",

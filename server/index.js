@@ -20,18 +20,16 @@ app.use(
   })
 );
 
-app.get('/', function(req, res) {
-  res.redirect('/ui');
+app.get("/", function (req, res) {
+  res.redirect("/ui");
 });
 
-express.static("../app");
-app.use(express.static("../app/public"));
+app.use("/", express.static("../app"));
 app.use("/ui", require("./routes/ui"));
 
 app.use("/auth", require("./routes/auth"));
 app.use("/blogs", require("./routes/blogs"));
 app.use("/posts", require("./routes/posts"));
-app.use("/categories", require("./routes/categories"));
 
 app.use((error, req, res, next) => {
   logger.log({

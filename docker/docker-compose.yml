@@ -13,3 +13,12 @@ services:
       - 5000:3306
     cap_add:
       - SYS_NICE
+
+  server:
+    build: ../
+    ports:
+      - "8081:8080"
+    depends_on:
+      - db
+    environment:
+      - NODE_ENV=Docker
