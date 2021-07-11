@@ -15,30 +15,29 @@ auth.post("/login", (req, res, next) => {
     throw error;
   }
 
-  models.User.findAll({
+  models.User.findOne({
     where: {
       cEmail: body.email,
     },
   })
-    .then(async (users) => {
-      if (users.length == 0) {
+    .then(async (user) => {
+      if (!user) {
         const error = new Error("Email and/or Password is incorrect");
         error.statusCode = 400;
         throw error;
       } else {
-        const { rows } = dataCleaner(users);
-        const hashedPassword = await bcrypt.hash(body.password, users[0].cSalt);
+        const hashedPassword = await bcrypt.hash(body.password, user.cSalt);
 
-        if (rows[0].cHashedPassword != hashedPassword) {
+        if (user.cHashedPassword != hashedPassword) {
           const error = new Error("Email and/or Password is incorrect");
           error.statusCode = 400;
           throw error;
         } else {
           const token = jwt.sign(
             {
-              id: users[0].pkUser,
-              email: users[0].cEmail,
-              name: users[0].cFirstName + " " + users[0].cLastName,
+              id: user.pkUser,
+              email: user.cEmail,
+              name: user.cFirstName + " " + user.cLastName,
             },
             SECRET,
             {
@@ -64,14 +63,13 @@ auth.post("/register", (req, res, next) => {
 
   let passwordSalt = "";
 
-  // TODO Use logger
-  models.User.findAll({
+  models.User.findOne({
     where: {
       cEmail: body.email,
     },
   })
-    .then((users) => {
-      if (users.length > 0) {
+    .then((user) => {
+      if (user) {
         const error = new Error("User already registered");
         error.statusCode = 400;
         throw error;
