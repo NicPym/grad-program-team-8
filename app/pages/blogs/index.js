@@ -7,7 +7,7 @@ const getCardTemplate = (title, subscriberCount, description, blogID) => {
             <div class="card-subtitle text-muted mb-2">${subscriberCount} subscribers</div>
             <div class="card-text mb-2">${description}</div>
             <div>
-                <a href="posts/?blogID=${blogID}" class="btn btn-info mt-2">Read more</a>
+                <a href="/posts/?blogID=${blogID}" class="btn btn-info mt-2">Read more</a>
                 <a href="" class="btn btn-success mt-2">Subscribe</a>
             </div>
         </div>
@@ -43,7 +43,12 @@ window.onload = function () {
         let title = owner + "'s blog";
         let subscriberCount = blog.subscriberCount;
         let description = blog.description;
-        let element = getCardTemplate(title, subscriberCount, description, blog.id);
+        let element = getCardTemplate(
+          title,
+          subscriberCount,
+          description,
+          blog.id
+        );
         document.getElementById("blog-list").appendChild(element);
       });
     });

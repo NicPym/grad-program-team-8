@@ -2,43 +2,109 @@ const blogs = require("express").Router();
 const authenticate = require("../util/authenticate");
 const models = require("../models").sequelize.models;
 const { sequelize } = require("../models");
+const { Op } = require("sequelize");
 const { dataCleaner, formatDate } = require("../util/helpers");
 
-blogs.get("/", (req, res, next) => {
-  models.Blog.findAll({
-    include: [
-      {
-        model: models.User,
-        attributes: [
-          [
-            sequelize.fn(
-              "concat",
-              sequelize.col("cFirstName"),
-              " ",
-              sequelize.col("cLastName")
-            ),
-            "owner",
-          ],
-        ],
-      },
-    ],
-  })
-    .then((blogs) => {
-      if (blogs.length == 0) {
-        return res.json([]);
-      } else {
-        const { rows } = dataCleaner(blogs);
+blogs.get("/", authenticate, (req, res, next) => {
+  let blogs = [];
 
-        res.json(
-          rows.map((row) => {
-            return {
-              id: row.pkBlog,
-              description: row.cDescription,
-              subscriberCount: row.iSubscriberCount,
-              owner: row.owner,
-            };
-          })
-        );
+  models.Subscription.findAll({
+    where: {
+      fkUser: req.token.id,
+    },
+  })
+    .then((subscriptions) => {
+      const { rows } = dataCleaner(subscriptions);
+      return Promise.all(
+        rows.map((row) => {
+          return models.Blog.findOne({
+            where: {
+              pkBlog: row.fkBlog,
+            },
+            include: [
+              {
+                model: models.User,
+                attributes: [
+                  [
+                    sequelize.fn(
+                      "concat",
+                      sequelize.col("cFirstName"),
+                      " ",
+                      sequelize.col("cLastName")
+                    ),
+                    "owner",
+                  ],
+                ],
+              },
+              {
+                model: models.Subscription,
+                attributes: ["fkUser"],
+              },
+            ],
+          });
+        })
+      );
+    })
+    .then((subscribedBlogs) => {
+      if (subscribedBlogs.length == 0) {
+        const { rows } = dataCleaner(subscribedBlogs);
+
+        rows.forEach((row) => {
+          blogs.push({
+            id: row.pkBlog,
+            description: row.cDescription,
+            subscriberCount: row.iSubscriberCount,
+            owner: row.owner,
+            subscribed: true,
+          });
+        });
+      }
+
+      return models.Blog.findAll({
+        where: {
+          pkBlog: {
+            [Op.notIn]: blogs.map((blog) => blog.id),
+          },
+        },
+        include: [
+          {
+            model: models.User,
+            attributes: [
+              [
+                sequelize.fn(
+                  "concat",
+                  sequelize.col("cFirstName"),
+                  " ",
+                  sequelize.col("cLastName")
+                ),
+                "owner",
+              ],
+            ],
+          },
+          {
+            model: models.Subscription,
+            attributes: ["fkUser"],
+          },
+        ],
+      });
+    })
+    .then((unsubscribedBlogs) => {
+      if (unsubscribedBlogs.length == 0) {
+        return res.json(blogs);
+      } else {
+        const { rows } = dataCleaner(unsubscribedBlogs);
+
+        rows.forEach((row) => {
+          blogs.push({
+            id: row.pkBlog,
+            description: row.cDescription,
+            subscriberCount: row.iSubscriberCount,
+            owner: row.owner,
+            subscribed: false,
+          });
+        });
+
+        res.json(blogs);
       }
     })
     .catch((err) => next(err));
@@ -226,7 +292,7 @@ blogs.get("/:id/posts", (req, res, next) => {
 
 blogs.post("/:id/posts", authenticate, (req, res, next) => {
   const body = req.body;
-  console.log('bodies',body);
+  console.log("bodies", body);
 
   if (!body.text || !body.title || !body.description) {
     const error = new Error("Data not formatted properly");
