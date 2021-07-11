@@ -20,6 +20,10 @@ ui.get("/blogs", function (req, res) {
   res.sendFile(path.join(appDir, "pages", "blogs", "index.html"));
 });
 
+ui.get("/subscriptions", function (req, res) {
+  res.sendFile(path.join(appDir, "pages", "subscriptions", "index.html"));
+});
+
 ui.get("/posts", function (req, res) {
   res.sendFile(path.join(appDir, "pages", "posts", "index.html"));
 });

@@ -1,18 +1,18 @@
 const getCardTemplate = (title, subscriberCount, description) => {
   const card = document.createElement("div");
   card.innerHTML = `
-    <div class="card mt-4">
-        <div class="card-body">
-            <h4>${title}</h4>
-            <div class="card-subtitle text-muted mb-2">${subscriberCount} subscribers</div>
-            <div class="card-text mb-2">${description}</div>
-            <div>
-                <button class="btn btn-info mt-2">Read more</button>
-                <button class="btn btn-success mt-2">Subscribe</button>
-            </div>
-        </div>
-    </div>
-    `;
+	  <div class="card mt-4">
+		  <div class="card-body">
+			  <h4>${title}</h4>
+			  <div class="card-subtitle text-muted mb-2">${subscriberCount} subscribers</div>
+			  <div class="card-text mb-2">${description}</div>
+			  <div>
+				  <button class="btn btn-info mt-2">Read more</button>
+				  <button class="btn btn-success mt-2">Subscribe</button>
+			  </div>
+		  </div>
+	  </div>
+	  `;
   return card;
 };
 
@@ -25,7 +25,7 @@ const appendCard = (id, element) => {
 // Get the blogs from the server
 window.onload = function () {
   console.log("onload");
-  let blogsEndpoint = "/api/blogs";
+  let blogsEndpoint = "/api/subscriptions";
   fetch(blogsEndpoint)
     .then((response) => {
       return response.json();
