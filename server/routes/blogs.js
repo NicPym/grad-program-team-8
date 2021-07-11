@@ -46,7 +46,7 @@ blogs.get("/", authenticate, (req, res, next) => {
       );
     })
     .then((subscribedBlogs) => {
-      if (subscribedBlogs.length == 0) {
+      if (subscribedBlogs.length != 0) {
         const { rows } = dataCleaner(subscribedBlogs);
 
         rows.forEach((row) => {

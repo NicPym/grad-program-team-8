@@ -26,9 +26,19 @@ const appendCard = (id, element) => {
 window.onload = function () {
   console.log("onload");
   let blogsEndpoint = "/api/blogs";
-  fetch(blogsEndpoint)
+  fetch(blogsEndpoint, {
+    headers: new Headers({
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+    }),
+  })
     .then((response) => {
-      return response.json();
+      if (!response.ok) {
+        if (response.status == 401) {
+          document.location.href = "/login";
+        }
+      } else {
+        return response.json();
+      }
     })
     .then((json) => {
       // check if the json is empty
