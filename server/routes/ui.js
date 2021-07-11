@@ -16,7 +16,7 @@ ui.get("/login", function (req, res) {
   res.sendFile(path.join(appDir, "pages", "login", "index.html"));
 });
 
-ui.get("/all-blogs", function (req, res) {
+ui.get("/blogs", function (req, res) {
   res.sendFile(path.join(appDir, "pages", "blogs", "index.html"));
 });
 
