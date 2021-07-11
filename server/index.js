@@ -7,6 +7,11 @@ const { sequelize } = require("./models");
 require("dotenv").config(".env");
 const port = 8080;
 
+logger.log({
+  logger: "info",
+  message: process.env.NODE_ENV,
+});
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
