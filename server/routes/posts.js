@@ -70,12 +70,14 @@ posts.put("/", authenticate, (req, res, next) => {
     .then((post) => {
       const { rows } = dataCleaner(post);
       if (rows.length == 0) {
-        res.sendStatus(404);
+        const error = new Error(`Post with id: ${body.id} does not exist`);
+        error.statusCode = 404;
+        throw error;
       } else if (rows[0].ownerId != req.token.id) {
         const error = new Error(
           `Cannot edit post as you do not own the post with id: ${body.id}`
         );
-        error.statusCode = 404;
+        error.statusCode = 401;
         throw error;
       } else {
         return post.update({
@@ -116,7 +118,7 @@ posts.delete("/", authenticate, (req, res, next) => {
     .then((post) => {
       const { rows } = dataCleaner(post);
       if (rows.length == 0) {
-        res.sendStatus(200);
+        return;
       } else if (rows[0].ownerId != req.token.id) {
         const error = new Error(
           `Cannot delete post as you do not own the post with id: ${body.id}`

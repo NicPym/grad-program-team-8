@@ -10,6 +10,14 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         primaryKey: true,
       },
+      cTitle: {
+        type: DataTypes.STRING(255),
+        allowNull: false,
+      },
+      cDescription: {
+        type: DataTypes.STRING(255),
+        allowNull: false,
+      },
       cText: {
         type: DataTypes.TEXT("MEDIUMTEXT"),
         allowNull: false,
