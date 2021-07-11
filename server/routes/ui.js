@@ -5,7 +5,8 @@ const authenticate = require("../util/authenticate");
 const appDir = path.resolve(__dirname, '../../') + '/app/';
 
 ui.get("/", function( req, res ) {
-  res.sendFile(path.join(appDir, 'index.html'));
+  // res.sendFile(path.join(appDir, 'index.html'));
+  res.render('index');
 });
 
 ui.get("/profile", authenticate, function( req, res ) {
