@@ -25,6 +25,32 @@ posts.get("/", (req, res, next) => {
     .catch((err) => next(err));
 });
 
+posts.get("/:id", (req, res, next) => {
+
+  models.Post.findOne({
+    where: {
+      pkPost: req.params.id,
+    }
+  })
+    .then((post) => {
+      if (post.length == 0) {
+        const error = new Error("Blog Post Not Found");
+        error.statusCode = 404;
+        throw error;
+      } else {
+
+        res.json(
+          {
+            title: post.cTitle,
+            description: post.cDescription,
+            text: post.cText,
+          }
+        );
+      }
+    })
+    .catch((err) => next(err));
+});
+
 posts.put("/", authenticate, (req, res, next) => {
   const body = req.body;
 
