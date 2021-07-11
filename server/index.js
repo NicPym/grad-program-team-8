@@ -33,6 +33,7 @@ app.use("/", require("./routes/ui"));
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/blogs", require("./routes/blogs"));
 app.use("/api/posts", require("./routes/posts"));
+app.use("/api/subscriptions", require("./routes/subscriptions"));
 
 app.use((error, req, res, next) => {
   logger.log({

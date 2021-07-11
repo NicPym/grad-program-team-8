@@ -1,18 +1,18 @@
-const getCardTemplate = (title, subscriberCount, description, blogID) => {
+const getCardTemplate = (title, subscriberCount, description) => {
   const card = document.createElement("div");
   card.innerHTML = `
-    <div class="card mt-4">
-        <div class="card-body">
-            <h4>${title}</h4>
-            <div class="card-subtitle text-muted mb-2">${subscriberCount} subscribers</div>
-            <div class="card-text mb-2">${description}</div>
-            <div>
-                <a href="posts/?blogID=${blogID}" class="btn btn-info mt-2">Read more</a>
-                <a href="" class="btn btn-success mt-2">Subscribe</a>
-            </div>
-        </div>
-    </div>
-    `;
+	  <div class="card mt-4">
+		  <div class="card-body">
+			  <h4>${title}</h4>
+			  <div class="card-subtitle text-muted mb-2">${subscriberCount} subscribers</div>
+			  <div class="card-text mb-2">${description}</div>
+			  <div>
+				  <button class="btn btn-info mt-2">Read more</button>
+				  <button class="btn btn-success mt-2">Subscribe</button>
+			  </div>
+		  </div>
+	  </div>
+	  `;
   return card;
 };
 
@@ -25,10 +25,20 @@ const appendCard = (id, element) => {
 // Get the blogs from the server
 window.onload = function () {
   console.log("onload");
-  let blogsEndpoint = "/api/blogs";
-  fetch(blogsEndpoint)
+  let blogsEndpoint = "/api/subscriptions";
+  fetch(blogsEndpoint, {
+    headers: new Headers({
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+    }),
+  })
     .then((response) => {
-      return response.json();
+      if (!response.ok) {
+        if (response.status == 401) {
+          document.location.href = "/login";
+        }
+      } else {
+        return response.json();
+      }
     })
     .then((json) => {
       // check if the json is empty
@@ -38,12 +48,11 @@ window.onload = function () {
       }
       document.getElementById("empty-placeholder").style.display = "none";
       json.forEach((blog) => {
-        console.log(blog);
         let owner = blog.owner;
         let title = owner + "'s blog";
         let subscriberCount = blog.subscriberCount;
         let description = blog.description;
-        let element = getCardTemplate(title, subscriberCount, description, blog.id);
+        let element = getCardTemplate(title, subscriberCount, description);
         document.getElementById("blog-list").appendChild(element);
       });
     });
