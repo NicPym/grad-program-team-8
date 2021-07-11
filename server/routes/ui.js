@@ -20,7 +20,11 @@ ui.get("/posts", function (req, res) {
   res.sendFile(path.join(appDir, "pages", "posts", "index.html"));
 });
 
-ui.get("/post", function( req, res ) {
+ui.get("/post/add", function( req, res ) {
+  res.sendFile(path.join(appDir, "pages", "post",  "index.html"));
+});
+
+ui.get("/post/edit", function( req, res ) {
   res.sendFile(path.join(appDir, "pages", "post",  "index.html"));
 });
 
