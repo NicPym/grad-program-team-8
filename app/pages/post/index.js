@@ -37,12 +37,14 @@ document.forms["blog-post-form"].addEventListener("submit", (event) => {
               if (!res.ok) {
                 throw new Error(res.statusText);
               }
+              alert("Post Create Successful");
               return res.json();
             })
             .then((body) => {
               console.log(body);
             })
             .catch((error) => {
+              alert("Post Create Failed");
               console.error(error);
             });
 
@@ -62,12 +64,14 @@ document.forms["blog-post-form"].addEventListener("submit", (event) => {
               if (!res.ok) {
                 throw new Error(res.statusText);
               }
+              alert("Save Successful");
               return res.json();
             })
             .then((body) => {
               console.log(body);
             })
             .catch((error) => {
+              alert("Save Failed");
               console.error(error);
             });
     }
