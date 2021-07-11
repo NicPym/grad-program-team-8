@@ -29,19 +29,23 @@ blogs.get("/", (req, res, next) => {
     ],
   })
     .then((blogs) => {
-      const { rows } = dataCleaner(blogs);
+      if (blogs.length == 0) {
+        return res.json([]);
+      } else {
+        const { rows } = dataCleaner(blogs);
 
-      res.json(
-        rows.map((row) => {
-          return {
-            id: row.pkBlog,
-            description: row.cDescription,
-            subscriberCount: row.iSubscriberCount,
-            owner: row.owner,
-            categoryId: row.fkCategory,
-          };
-        })
-      );
+        res.json(
+          rows.map((row) => {
+            return {
+              id: row.pkBlog,
+              description: row.cDescription,
+              subscriberCount: row.iSubscriberCount,
+              owner: row.owner,
+              categoryId: row.fkCategory,
+            };
+          })
+        );
+      }
     })
     .catch((err) => next(err));
 });
@@ -72,6 +76,8 @@ blogs.get("/:id", (req, res, next) => {
       if (!blog) {
         res.sendStatus(404);
       } else {
+        const { rows } = dataCleaner(blog);
+        blog = rows[0];
         res.json({
           id: blog.pkBlog,
           description: blog.cDescription,
@@ -111,10 +117,10 @@ blogs.post("/", authenticate, (req, res, next) => {
     .catch((err) => next(err));
 });
 
-blogs.put("/:id", authenticate, (req, res, next) => {
+blogs.put("/", authenticate, (req, res, next) => {
   const body = req.body;
 
-  if (!body.newDescription) {
+  if (!(body.id && body.description)) {
     const error = new Error("Data not formatted properly");
     error.statusCode = 400;
     throw error;
@@ -122,38 +128,63 @@ blogs.put("/:id", authenticate, (req, res, next) => {
 
   models.Blog.findOne({
     where: {
-      pkBlog: req.params.id,
+      pkBlog: body.id,
     },
   })
-  .then((blog) => {
-
-    blog.update({
-      cDescription: body.newDescription
+    .then((blog) => {
+      if (blog.fkUser != req.token.id) {
+        const error = new Error(
+          `Cannot edit blog as you do not own the blog with id: ${body.id}`
+        );
+        error.statusCode = 404;
+        throw error;
+      } else {
+        return blog.update({
+          cDescription: body.description,
+        });
+      }
     })
-    .then((_) => {
-
-      res.sendStatus(200);
+    .then((blog) => {
+      res.json({
+        id: blog.pkBlog,
+        description: blog.cDescription,
+        subscriberCount: blog.iSubscriberCount,
+        owner: req.token.name,
+        categoryId: blog.fkCategory,
+      });
     })
-  })
-  .catch((err) => next(err));
+    .catch((err) => next(err));
 });
 
-blogs.delete("/:id", authenticate, (req, res, next) => {
+blogs.delete("/", authenticate, (req, res, next) => {
+  const body = req.body;
+
+  if (!body.id) {
+    const error = new Error("Data not formatted properly");
+    error.statusCode = 400;
+    throw error;
+  }
 
   models.Blog.findOne({
     where: {
-      pkBlog: req.params.id,
+      pkBlog: body.id,
     },
   })
-  .then((blog) => {
-
-    blog.destroy()
+    .then((blog) => {
+      if (blog.fkUser != req.token.id) {
+        const error = new Error(
+          `Cannot delete blog as you do not own the blog with id: ${body.id}`
+        );
+        error.statusCode = 404;
+        throw error;
+      } else {
+        return blog.destroy();
+      }
+    })
     .then((_) => {
-
       res.sendStatus(200);
     })
-  })
-  .catch((err) => next(err));
+    .catch((err) => next(err));
 });
 
 blogs.get("/:id/posts", (req, res, next) => {
@@ -213,6 +244,12 @@ blogs.post("/:id/posts", authenticate, (req, res, next) => {
           `Blog with id: ${req.params.id} does not exist`
         );
         error.statusCode = 400;
+        throw error;
+      } else if (blog.fkUser != req.token.id) {
+        const error = new Error(
+          `Cannot add a post to the blog as you do not own the blog with id: ${req.params.id}`
+        );
+        error.statusCode = 404;
         throw error;
       } else {
         return models.Post.create({

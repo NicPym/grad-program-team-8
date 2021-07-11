@@ -4,30 +4,31 @@ const models = require("../models").sequelize.models;
 const { dataCleaner, formatDate } = require("../util/helpers");
 
 posts.get("/", (req, res, next) => {
-
-  models.Post.findAll({
-  })
+  models.Post.findAll({})
     .then((posts) => {
-      const { rows } = dataCleaner(posts);
+      if (posts.length == 0) {
+        res.json([]);
+      } else {
+        const { rows } = dataCleaner(posts);
 
-      res.json(
-        rows.map((row) => {
-          return {
-            id: row.pkPost,
-            text: row.cText,
-            createdAt: row.createdAt,
-          };
-        })
-      );
+        res.json(
+          rows.map((row) => {
+            return {
+              id: row.pkPost,
+              text: row.cText,
+              createdAt: row.createdAt,
+            };
+          })
+        );
+      }
     })
     .catch((err) => next(err));
 });
 
-posts.put("/:id", authenticate, (req, res, next) => {
-
+posts.put("/", authenticate, (req, res, next) => {
   const body = req.body;
 
-  if (!body.newText) {
+  if (!(body.id && body.text)) {
     const error = new Error("Data not formatted properly");
     error.statusCode = 400;
     throw error;
@@ -35,38 +36,79 @@ posts.put("/:id", authenticate, (req, res, next) => {
 
   models.Post.findOne({
     where: {
-      pkPost: req.params.id,
+      pkPost: body.id,
     },
+    include: [
+      {
+        model: models.Blog,
+        attributes: [["fkUser", "ownerId"]],
+      },
+    ],
   })
-  .then((post) => {
-
-    post.update({
-      cText: body.newText
+    .then((post) => {
+      const { rows } = dataCleaner(post);
+      if (rows.length == 0) {
+        res.sendStatus(404);
+      } else if (rows[0].ownerId != req.token.id) {
+        const error = new Error(
+          `Cannot edit post as you do not own the post with id: ${body.id}`
+        );
+        error.statusCode = 404;
+        throw error;
+      } else {
+        return post.update({
+          cText: body.text,
+        });
+      }
     })
-    .then((_) => {
-
-      res.sendStatus(200);
+    .then((post) => {
+      res.json({
+        id: post.pkPost,
+        text: post.cText,
+        createdAt: post.createdAt,
+      });
     })
-  })
-  .catch((err) => next(err));
+    .catch((err) => next(err));
 });
 
-posts.delete("/:id", authenticate, (req, res, next) => {
+posts.delete("/", authenticate, (req, res, next) => {
+  const body = req.body;
+
+  if (!body.id) {
+    const error = new Error("Data not formatted properly");
+    error.statusCode = 400;
+    throw error;
+  }
 
   models.Post.findOne({
     where: {
-      pkPost: req.params.id,
+      pkPost: body.id,
     },
+    include: [
+      {
+        model: models.Blog,
+        attributes: [["fkUser", "ownerId"]],
+      },
+    ],
   })
-  .then((post) => {
-
-    post.destroy()
+    .then((post) => {
+      const { rows } = dataCleaner(post);
+      if (rows.length == 0) {
+        res.sendStatus(200);
+      } else if (rows[0].ownerId != req.token.id) {
+        const error = new Error(
+          `Cannot delete post as you do not own the post with id: ${body.id}`
+        );
+        error.statusCode = 404;
+        throw error;
+      } else {
+        return post.destroy();
+      }
+    })
     .then((_) => {
-
       res.sendStatus(200);
     })
-  })
-  .catch((err) => next(err));
+    .catch((err) => next(err));
 });
 
 module.exports = posts;

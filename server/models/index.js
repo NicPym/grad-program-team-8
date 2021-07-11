@@ -35,7 +35,7 @@ db.blog.hasMany(db.subscription, {
 db.blog.hasMany(db.post, {
   foreignKey: "fkBlog",
   targetKey: "pkBlog",
-  onDelete: "cascade"
+  onDelete: "cascade",
 });
 
 db.category.hasMany(db.blog, {
@@ -43,10 +43,16 @@ db.category.hasMany(db.blog, {
   targetKey: "pkCategory",
 });
 
+db.post.belongsTo(db.blog, {
+  foreignKey: "fkBlog",
+  targetKey: "pkBlog",
+});
+
 db.subscription.belongsTo(db.blog, {
   foreignKey: "fkBlog",
   targetKey: "pkBlog",
 });
+
 db.subscription.belongsTo(db.user, {
   foreignKey: "fkUser",
   targetKey: "pkUser",
