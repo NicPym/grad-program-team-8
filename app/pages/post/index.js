@@ -8,14 +8,67 @@ window.onload = async function () {
         document.getElementById("create-edit-post-title").innerHTML = "New Post";
         localStorage.setItem('doingPostCreate', true);
         localStorage.setItem('doingPostEdit', false);
+        localStorage.setItem('create-post-for-blog-id', params.get('blogID'));
 
     } else if (last_segment === "edit" && params.has("postID")) {
         document.getElementById("create-edit-post-title").innerHTML = "Edit Post";
         localStorage.setItem('doingPostEdit', true);
         localStorage.setItem('doingPostCreate', false);
+        localStorage.setItem('edit-post-with-id', params.get('postID'));
 
     } else {
         window.location.href = "/blogs";
     }
-
 }
+
+document.forms["blog-post-form"].addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    if (localStorage.getItem('doingPostCreate') === "true") {
+
+        fetch(`/api/blogs/${localStorage.getItem('create-post-for-blog-id')}/posts`, {
+            method: "POST",
+            body: new URLSearchParams(new FormData(event.target)),
+            headers: new Headers({
+              'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            }),
+          })
+            .then((res) => {
+              if (!res.ok) {
+                throw new Error(res.statusText);
+              }
+              return res.json();
+            })
+            .then((body) => {
+              console.log(body);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+
+    } else if (localStorage.getItem('doingPostEdit') === "true") {
+
+        const formData = new FormData(event.target);
+        formData.append('id', localStorage.getItem('edit-post-with-id'));
+
+        fetch(`/api/posts/`, {
+            method: "PUT",
+            body: new URLSearchParams(formData),
+            headers: new Headers({
+              'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+            }),
+          })
+            .then((res) => {
+              if (!res.ok) {
+                throw new Error(res.statusText);
+              }
+              return res.json();
+            })
+            .then((body) => {
+              console.log(body);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+    }
+});

@@ -38,7 +38,7 @@
     <div class="container">
         <h1 id="create-edit-post-title" class="mb-4">New Article</h1>
         <!-- allows to render the html -->
-       <form id="form" method="POST">
+       <form id="blog-post-form">
         <div class="form-group">
             <label for="title">Title</label>
             <input required  type="text"  name="title" id="title" class="form-control">
@@ -48,8 +48,8 @@
             <textarea style="height: 5vh;" name="description" id="description" class="form-control"></textarea>
           </div>
           <div class="form-group">
-            <label for="mark-down">Markdown</label>
-            <textarea name="mark-down" id="mark-down" class="form-control"></textarea>
+            <label for="text">Markdown</label>
+            <textarea name="text" id="mark-down" class="form-control"></textarea>
           </div>
 
           <a href="/articles" class="btn btn-secondary mt-2">Cancel</a>
