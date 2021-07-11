@@ -21,7 +21,7 @@ ui.get("/blogs", function (req, res) {
 });
 
 ui.get("/posts", function (req, res) {
-  res.sendFile(path.join(appDir, "pages", "all-posts", "index.html"));
+  res.sendFile(path.join(appDir, "pages", "posts", "index.html"));
 });
 
 ui.get("/blog-post", function (req, res) {
