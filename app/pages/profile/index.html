@@ -8,7 +8,8 @@
   <link rel="stylesheet" href="../../css/style.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <script src="./pages/profile/index.js" async></script>
+  <script src="./pages/profile/index.js" defer></script>
+  <script src="./js/index.js" defer></script>
 </head>
 
 <body>
@@ -34,7 +35,7 @@
           <a class="nav-link" href="#">MY PROFILE</a>
         </li>
       </ul>
-      <button class="sign-out-btn">SIGN OUT</button>
+      <button class="sign-out-btn" onclick="logOut()">SIGN OUT</button>
     </div>
   </nav>
   <section class="body-info">

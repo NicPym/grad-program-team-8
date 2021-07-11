@@ -10,7 +10,14 @@ const port = 8080;
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    useDefaults: true,
+    directives: {
+      "script-src-attr": ["'unsafe-inline'"],
+    },
+  })
+);
 
 app.use(
   cors({
