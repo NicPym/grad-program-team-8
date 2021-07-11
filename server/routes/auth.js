@@ -6,6 +6,19 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const SECRET = process.env.JWT_SECRET;
 
+const getToken = (id, email, name) =>
+  jwt.sign(
+    {
+      id,
+      email,
+      name,
+    },
+    SECRET,
+    {
+      expiresIn: "12h",
+    }
+  );
+
 auth.post("/login", (req, res, next) => {
   const body = req.body;
 
@@ -33,19 +46,15 @@ auth.post("/login", (req, res, next) => {
           error.statusCode = 400;
           throw error;
         } else {
-          const token = jwt.sign(
-            {
-              id: user.pkUser,
-              email: user.cEmail,
-              name: user.cFirstName + " " + user.cLastName,
-            },
-            SECRET,
-            {
-              expiresIn: "12h",
-            }
+          const token = getToken(
+            user.pkUser,
+            user.cEmail,
+            user.cFirstName + " " + user.cLastName
           );
 
-          res.json({ token: token });
+          res.json({
+            token,
+          });
         }
       }
     })
@@ -96,7 +105,15 @@ auth.post("/register", (req, res, next) => {
         message: `[auth.js]\tCreated new user with email ${createdUser.cEmail}`,
       });
 
-      res.sendStatus(201);
+      const token = getToken(
+        createdUser.pkUser,
+        createdUser.cEmail,
+        body.name + " " + createdUser.cLastName
+      );
+
+      res.status(200).json({
+        token,
+      });
     })
     .catch((err) => {
       next(err);

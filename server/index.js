@@ -20,12 +20,8 @@ app.use(
   })
 );
 
-app.get("/", function (req, res) {
-  res.redirect("/ui");
-});
-
 app.use("/", express.static("../app"));
-app.use("/ui", require("./routes/ui"));
+app.use("/", require("./routes/ui"));
 
 app.use("/auth", require("./routes/auth"));
 app.use("/blogs", require("./routes/blogs"));
