@@ -3,7 +3,7 @@ window.localStorage.setItem("blog-post-id", "1"); // setItem onClick a post in t
 const blogId = window.localStorage.getItem("blog-post-id");
 
 async function getBlogPostById(blogId) {
-  const response = await fetch(`/posts/${blogId}`, {
+  const response = await fetch(`/api/posts/${blogId}`, {
     method: "GET",
   });
   return response;
