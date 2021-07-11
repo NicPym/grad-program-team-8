@@ -14,36 +14,40 @@ blogs.get("/", authenticate, (req, res, next) => {
     },
   })
     .then((subscriptions) => {
-      const { rows } = dataCleaner(subscriptions);
-      return Promise.all(
-        rows.map((row) => {
-          return models.Blog.findOne({
-            where: {
-              pkBlog: row.fkBlog,
-            },
-            include: [
-              {
-                model: models.User,
-                attributes: [
-                  [
-                    sequelize.fn(
-                      "concat",
-                      sequelize.col("cFirstName"),
-                      " ",
-                      sequelize.col("cLastName")
-                    ),
-                    "owner",
+      if (subscriptions.length == 0) {
+        return [];
+      } else {
+        const { rows } = dataCleaner(subscriptions);
+        return Promise.all(
+          rows.map((row) => {
+            return models.Blog.findOne({
+              where: {
+                pkBlog: row.fkBlog,
+              },
+              include: [
+                {
+                  model: models.User,
+                  attributes: [
+                    [
+                      sequelize.fn(
+                        "concat",
+                        sequelize.col("cFirstName"),
+                        " ",
+                        sequelize.col("cLastName")
+                      ),
+                      "owner",
+                    ],
                   ],
-                ],
-              },
-              {
-                model: models.Subscription,
-                attributes: ["fkUser"],
-              },
-            ],
-          });
-        })
-      );
+                },
+                {
+                  model: models.Subscription,
+                  attributes: ["fkUser"],
+                },
+              ],
+            });
+          })
+        );
+      }
     })
     .then((subscribedBlogs) => {
       if (subscribedBlogs.length != 0) {
@@ -431,6 +435,46 @@ blogs.post("/:id/subscribe", authenticate, (req, res, next) => {
       return models.Blog.increment("iSubscriberCount", {
         by: 1,
         where: { pkBlog: subscription.fkBlog },
+      });
+    })
+    .then((_) => {
+      res.sendStatus(200);
+    })
+    .catch((err) => next(err));
+});
+
+blogs.post("/:id/unsubscribe", authenticate, (req, res, next) => {
+  models.Blog.findOne({
+    where: {
+      pkBlog: req.params.id,
+    },
+  })
+    .then((blog) => {
+      if (!blog) {
+        const error = new Error(
+          `Blog with id: ${req.params.id} does not exist`
+        );
+        error.statusCode = 400;
+        throw error;
+      } else {
+        return models.Subscription.findOne({
+          where: { fkUser: req.token.id, fkBlog: req.params.id },
+        });
+      }
+    })
+    .then((subscription) => {
+      if (!subscription) {
+        const error = new Error(`You are not subscribed to this blog`);
+        error.statusCode = 400;
+        throw error;
+      } else {
+        return subscription.destroy();
+      }
+    })
+    .then((_) => {
+      return models.Blog.decrement("iSubscriberCount", {
+        by: 1,
+        where: { pkBlog: req.params.id },
       });
     })
     .then((_) => {
