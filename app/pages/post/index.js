@@ -1,13 +1,21 @@
-let url = window.location.pathname;
-let formElement = document.getElementById("form");
+window.onload = async function () {
 
-if (url.localeCompare("/post/add") == 0){
-    formElement.setAttribute("action", "blogs/")
-}
-else if (url.localeCompare("/post/edit") == 0){
-    // maybe the put route from the server need to take a blog ID
-    // Then we'll change this action accordingly
-    formElement.setAttribute("action", "blogs/")
-}
+    const params = new URLSearchParams(window.location.search);
+    const last_segment = window.location.pathname.split('/').pop();
 
-console.log(url);
+    if (last_segment === "add" && params.has("blogID")) {
+
+        document.getElementById("create-edit-post-title").innerHTML = "New Post";
+        localStorage.setItem('doingPostCreate', true);
+        localStorage.setItem('doingPostEdit', false);
+
+    } else if (last_segment === "edit" && params.has("postID")) {
+        document.getElementById("create-edit-post-title").innerHTML = "Edit Post";
+        localStorage.setItem('doingPostEdit', true);
+        localStorage.setItem('doingPostCreate', false);
+
+    } else {
+        window.location.href = "/blogs";
+    }
+
+}
