@@ -9,7 +9,6 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
 		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<script src="../../pages/posts/index.js" async></script>
-	<script src="./js/index.js" defer></script>
 </head>
 
 <body>
@@ -38,6 +37,17 @@
 			<button class="sign-out-btn" onclick="logOut()">SIGN OUT</button>
 		</div>
 	</nav>
+    
+	<div class="container" id="post-list">
+		<div class="h1 center-title" id="blog-title"></div>
+		<div class="card mt-4" id="empty-placeholder">
+			<div class="card-body">
+				<h4>Stay tuned!</h4>
+				<div class="card-text mb-2">Looks like the author of this blog hasn't posted anything yet.</div>
+			</div>
+		</div>
+	</div>
+	
 </body>
 
 </html>

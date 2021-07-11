@@ -1,4 +1,4 @@
-const getCardTemplate = (title, subscriberCount, description) => {
+const getCardTemplate = (title, subscriberCount, description, blogID) => {
   const card = document.createElement("div");
   card.innerHTML = `
     <div class="card mt-4">
@@ -7,8 +7,8 @@ const getCardTemplate = (title, subscriberCount, description) => {
             <div class="card-subtitle text-muted mb-2">${subscriberCount} subscribers</div>
             <div class="card-text mb-2">${description}</div>
             <div>
-                <button class="btn btn-info mt-2">Read more</button>
-                <button class="btn btn-success mt-2">Subscribe</button>
+                <a href="posts/?blogID=${blogID}" class="btn btn-info mt-2">Read more</a>
+                <a href="" class="btn btn-success mt-2">Subscribe</a>
             </div>
         </div>
     </div>
@@ -38,11 +38,12 @@ window.onload = function () {
       }
       document.getElementById("empty-placeholder").style.display = "none";
       json.forEach((blog) => {
+        console.log(blog);
         let owner = blog.owner;
         let title = owner + "'s blog";
         let subscriberCount = blog.subscriberCount;
         let description = blog.description;
-        let element = getCardTemplate(title, subscriberCount, description);
+        let element = getCardTemplate(title, subscriberCount, description, blog.id);
         document.getElementById("blog-list").appendChild(element);
       });
     });
