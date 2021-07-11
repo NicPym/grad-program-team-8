@@ -16,7 +16,7 @@ getBlogPostById(blogId)
   .then(async (res) => {
 
     if (!res.ok) {
-      window.location = `${origin}/ui/not-found`;
+      window.location.href = `/ui/not-found`;
       return;
     }
 
