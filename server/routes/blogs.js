@@ -213,6 +213,8 @@ blogs.get("/:id/posts", (req, res, next) => {
             return {
               id: row.pkPost,
               text: row.cText,
+              description: row.cDescription,
+              title: row.cTitle,
               createdAt: row.createdAt,
             };
           })
@@ -224,8 +226,9 @@ blogs.get("/:id/posts", (req, res, next) => {
 
 blogs.post("/:id/posts", authenticate, (req, res, next) => {
   const body = req.body;
+  console.log('bodies',body);
 
-  if (!body.text) {
+  if (!body.text || !body.title || !body.description) {
     const error = new Error("Data not formatted properly");
     error.statusCode = 400;
     throw error;
@@ -252,6 +255,8 @@ blogs.post("/:id/posts", authenticate, (req, res, next) => {
       } else {
         return models.Post.create({
           cText: body.text,
+          cDescription: body.description,
+          cTitle: body.title,
           fkBlog: blog.pkBlog,
         });
       }
