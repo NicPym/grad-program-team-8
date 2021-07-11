@@ -5,7 +5,7 @@ async function getBlogPostById(blogId) {
   return response;
 }
 
-const getCardTemplate = (title, createdAt, description) => {
+const getCardTemplate = (title, createdAt, description, id) => {
   const card = document.createElement("div");
   card.innerHTML = `
   <div class="card mt-4">
@@ -14,7 +14,7 @@ const getCardTemplate = (title, createdAt, description) => {
           <div class="card-subtitle text-muted mb-2"> created at ${new Date(createdAt).toLocaleTimeString()}</div>
           <div class="card-text mb-2">${description}</div>
           <div>
-              <button class="btn btn-info mt-2">Read more</button>
+              <a href="/blog-post/?postID=${id}" class="btn btn-info mt-2">Read more</a>
           </div>
       </div>
   </div>
@@ -50,7 +50,8 @@ window.onload = async function () {
     }
     document.getElementById("empty-placeholder").style.display = "none";
     posts.forEach(post => {
-      const card = getCardTemplate(post.title, post.createdAt, post.description);
+      console.log(post);
+      const card = getCardTemplate(post.title, post.createdAt, post.description, post.id);
       appendCard("post-list", card);
     });
   }
