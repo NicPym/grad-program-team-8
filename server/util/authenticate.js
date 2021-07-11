@@ -4,7 +4,9 @@ const SECRET = process.env.JWT_SECRET;
 module.exports = (req, res, next) => {
   const authHeader = req.get("Authorization");
   if (!authHeader) {
-    return res.redirect("/login");
+    const error = new Error("Not Authenticated!");
+    error.statusCode = 401;
+    throw error;
   }
 
   const token = authHeader.split(/\s/g)[1];
@@ -12,13 +14,19 @@ module.exports = (req, res, next) => {
   try {
     decodedToken = jwt.verify(token, SECRET);
   } catch (err) {
-    return res.redirect("/login");
+    const error = new Error(
+      "Authentication Session Expired! Please Log In Again."
+    );
+    error.statusCode = 401;
+    throw error;
   }
 
   if (!decodedToken) {
-    return res.redirect("/login");
-  } else {
-    req.token = decodedToken;
-    next();
+    const error = new Error("Not Authenticated!");
+    error.statusCode = 401;
+    throw error;
   }
+
+  req.token = decodedToken;
+  next();
 };

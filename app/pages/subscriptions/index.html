@@ -3,16 +3,17 @@
 
 <head>
 	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Blog Post</title>
 	<link rel="stylesheet" href="../../css/style.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
 		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-	<script src="../../pages/posts/index.js" async></script>
+	<script src="./pages/subscriptions/index.js" defer></script>
+	<script src="./js/index.js" defer></script>
+	<title>Subscriptions</title>
 </head>
 
 <body>
-	<!-- Will add this to a partial view -->
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		<p class="nav-logo"><span>TEAM</span><span>08</span></p>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -21,33 +22,28 @@
 		</button>
 		<div class="collapse navbar-collapse nav-links" id="navbarNav">
 			<ul class="navbar-nav">
+				<li class="nav-item">
+					<a class="nav-link" href="/blogs">ALL BLOGS</a>
+				</li>
 				<li class="nav-item active">
-					<a class="nav-link" href="#">ALL ARTICLES <span class="sr-only">(current)</span></a>
+					<a class="nav-link" href="/subscriptions">SUBSCRIPTIONS </a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="#">SUBSCRIPTIOINS</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="#">MY ARTICLES</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="#">MY PROFILE</a>
+					<a class="nav-link" href="/profile">MY PROFILE</a>
 				</li>
 			</ul>
 			<button class="sign-out-btn" onclick="logOut()">SIGN OUT</button>
 		</div>
 	</nav>
-    
-	<div class="container" id="post-list">
-		<div class="h1 center-title" id="blog-title"></div>
+
+	<div class="container" id="blog-list">
 		<div class="card mt-4" id="empty-placeholder">
 			<div class="card-body">
-				<h4>Stay tuned!</h4>
-				<div class="card-text mb-2">Looks like the author of this blog hasn't posted anything yet.</div>
+				<h4>Looks like there's nothing here</h4>
+				<div class="card-text mb-2">We couldn't find any blogs. Be the first to make a new one!</div>
 			</div>
 		</div>
 	</div>
-	
 </body>
 
 </html>

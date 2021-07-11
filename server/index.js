@@ -30,9 +30,10 @@ app.use(
 app.use("/", express.static("../app"));
 app.use("/", require("./routes/ui"));
 
-app.use("/auth", require("./routes/auth"));
-app.use("/blogs", require("./routes/blogs"));
-app.use("/posts", require("./routes/posts"));
+app.use("/api/auth", require("./routes/auth"));
+app.use("/api/blogs", require("./routes/blogs"));
+app.use("/api/posts", require("./routes/posts"));
+app.use("/api/subscriptions", require("./routes/subscriptions"));
 
 app.use((error, req, res, next) => {
   logger.log({

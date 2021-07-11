@@ -213,6 +213,8 @@ blogs.get("/:id/posts", (req, res, next) => {
             return {
               id: row.pkPost,
               text: row.cText,
+              description: row.cDescription,
+              title: row.cTitle,
               createdAt: row.createdAt,
             };
           })
@@ -224,8 +226,9 @@ blogs.get("/:id/posts", (req, res, next) => {
 
 blogs.post("/:id/posts", authenticate, (req, res, next) => {
   const body = req.body;
+  console.log('bodies',body);
 
-  if (!body.text) {
+  if (!body.text || !body.title || !body.description) {
     const error = new Error("Data not formatted properly");
     error.statusCode = 400;
     throw error;
@@ -252,6 +255,8 @@ blogs.post("/:id/posts", authenticate, (req, res, next) => {
       } else {
         return models.Post.create({
           cText: body.text,
+          cDescription: body.description,
+          cTitle: body.title,
           fkBlog: blog.pkBlog,
         });
       }
@@ -262,6 +267,63 @@ blogs.post("/:id/posts", authenticate, (req, res, next) => {
         text: post.cText,
         createdAt: new Date().toISOString(),
       });
+    })
+    .catch((err) => next(err));
+});
+
+blogs.get("/subscriptions", (req, res, next) => {
+  models.Subscription.findAll({
+    where: {
+      fkUser: req.token.id,
+    },
+  })
+    .then((subscriptions) => {
+      if (subscriptions.length == 0) {
+        return [];
+      } else {
+        return Promise.all(
+          subscriptions.map((subscription) => {
+            return models.Blog.findOne({
+              where: {
+                pkBlog: subscription.fkBlog,
+              },
+              include: [
+                {
+                  model: models.User,
+                  attributes: [
+                    [
+                      sequelize.fn(
+                        "concat",
+                        sequelize.col("cFirstName"),
+                        " ",
+                        sequelize.col("cLastName")
+                      ),
+                      "owner",
+                    ],
+                  ],
+                },
+              ],
+            });
+          })
+        );
+      }
+    })
+    .then((blogs) => {
+      if (blogs.length == 0) {
+        res.json([]);
+      } else {
+        res.json(
+          blogs.map((blog) => {
+            const { rows } = dataCleaner(blog);
+            return {
+              id: rows[0].pkBlog,
+              description: rows[0].cDescription,
+              subscriberCount: rows[0].iSubscriberCount,
+              owner: rows[0].owner,
+            };
+          })
+        );
+      }
     })
     .catch((err) => next(err));
 });

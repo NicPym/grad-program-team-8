@@ -24,7 +24,7 @@
 
             <div class="tab-content">
                 <div class="tab-body active">
-                    <form id="loginForm" action="/auth/login" method="POST">
+                    <form id="loginForm" action="/api/auth/login" method="POST">
                         <div class="form-element">
                             <label id="invalid-details-label" style="color:red; display: none">Invalid
                                 username or
@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="tab-body">
-                    <form id="signUpForm" action="/auth/register" method="post">
+                    <form id="signUpForm" action="/api/auth/register" method="post">
                         <div id="name" class="form-element">
                             <input type="text" placeholder="Name" minlength="2"
                                 title="name must contain at least 2 characters" name="name" required>
