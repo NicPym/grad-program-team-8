@@ -26,26 +26,22 @@ posts.get("/", (req, res, next) => {
 });
 
 posts.get("/:id", (req, res, next) => {
-
   models.Post.findOne({
     where: {
       pkPost: req.params.id,
-    }
+    },
   })
     .then((post) => {
-      if (post.length == 0) {
+      if (!post) {
         const error = new Error("Blog Post Not Found");
         error.statusCode = 404;
         throw error;
       } else {
-
-        res.json(
-          {
-            title: post.cTitle,
-            description: post.cDescription,
-            text: post.cText,
-          }
-        );
+        res.json({
+          title: post.cTitle,
+          description: post.cDescription,
+          text: post.cText,
+        });
       }
     })
     .catch((err) => next(err));

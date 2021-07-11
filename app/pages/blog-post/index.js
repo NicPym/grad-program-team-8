@@ -2,22 +2,21 @@ window.localStorage.setItem("blog-post-id", "1"); // setItem onClick a post in t
 
 const blogId = window.localStorage.getItem("blog-post-id");
 
-const origin = window.location.origin;
-
 async function getBlogPostById(blogId) {
-  const response = await fetch(`${origin}/posts/${blogId}`, {
+  const response = await fetch(`/posts/${blogId}`, {
     method: "GET",
   });
   return response;
 }
 
 getBlogPostById(blogId).then(async (res) => {
-  if (!res.ok) {
-    window.location.href = `/not-found`;
-    return;
-  }
+  // if (!res.ok) {
+  //   window.location.href = `/not-found`;
+  //   return;
+  // }
 
   const data = await res.json();
+  console.log(data);
 
   document.getElementById("blog-title").innerHTML = data.title;
   document.getElementById("blog-description").innerHTML = data.description;
