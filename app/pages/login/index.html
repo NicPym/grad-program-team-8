@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="../../css/style.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="index.js" async></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="./pages/login/index.js" async></script>
 </head>
 
 <body>
@@ -20,11 +21,17 @@
                 <div class="active">Sign In</div>
                 <div>Sign Up</div>
             </div>
+
             <div class="tab-content">
                 <div class="tab-body active">
-                    <form action="#" method="post">
+                    <form id="loginForm" action="/auth/login" method="POST">
                         <div class="form-element">
-                            <input name="username" type="text" placeholder="Email / Username">
+                            <label id="invalid-details-label" style="color:red; display: none">Invalid
+                                username or
+                                password</label>
+                        </div>
+                        <div class="form-element">
+                            <input name="email" type="text" placeholder="Email">
                         </div>
                         <div class="form-element">
                             <input name="password" type="password" placeholder="Password">
@@ -32,14 +39,11 @@
                         <div class="form-element">
                             <button type="submit" name="login" value="login">Sign In</button>
                         </div>
-                        <div class="form-element">
-                            <a href="#">Forgotten password?</a>
-                        </div>
                     </form>
                 </div>
 
                 <div class="tab-body">
-                    <form action="#" method="post">
+                    <form id="signUpForm" action="/auth/register" method="post">
                         <div id="name" class="form-element">
                             <input type="text" placeholder="Name" minlength="2"
                                 title="name must contain at least 2 characters" name="name" required>
@@ -66,6 +70,7 @@
                         </div>
                     </form>
                 </div>
+
             </div>
         </div>
     </div>

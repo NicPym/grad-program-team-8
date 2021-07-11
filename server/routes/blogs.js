@@ -68,7 +68,11 @@ blogs.get("/:id", (req, res, next) => {
   })
     .then((blog) => {
       if (!blog) {
-        res.sendStatus(404);
+        const error = new Error(
+          `Blog with id: ${req.params.id} does not exist`
+        );
+        error.statusCode = 404;
+        throw error;
       } else {
         const { rows } = dataCleaner(blog);
         blog = rows[0];
@@ -127,7 +131,7 @@ blogs.put("/", authenticate, (req, res, next) => {
         const error = new Error(
           `Cannot edit blog as you do not own the blog with id: ${body.id}`
         );
-        error.statusCode = 404;
+        error.statusCode = 401;
         throw error;
       } else {
         return blog.update({
@@ -165,7 +169,7 @@ blogs.delete("/", authenticate, (req, res, next) => {
         const error = new Error(
           `Cannot delete blog as you do not own the blog with id: ${body.id}`
         );
-        error.statusCode = 404;
+        error.statusCode = 401;
         throw error;
       } else {
         return blog.destroy();
@@ -185,7 +189,11 @@ blogs.get("/:id/posts", (req, res, next) => {
   })
     .then((blog) => {
       if (!blog) {
-        res.sendStatus(404);
+        const error = new Error(
+          `Blog with id: ${req.params.id} does not exist`
+        );
+        error.statusCode = 404;
+        throw error;
       } else {
         return models.Post.findAll({
           where: {
@@ -233,13 +241,13 @@ blogs.post("/:id/posts", authenticate, (req, res, next) => {
         const error = new Error(
           `Blog with id: ${req.params.id} does not exist`
         );
-        error.statusCode = 400;
+        error.statusCode = 404;
         throw error;
       } else if (blog.fkUser != req.token.id) {
         const error = new Error(
           `Cannot add a post to the blog as you do not own the blog with id: ${req.params.id}`
         );
-        error.statusCode = 404;
+        error.statusCode = 401;
         throw error;
       } else {
         return models.Post.create({
