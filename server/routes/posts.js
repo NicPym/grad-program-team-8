@@ -123,7 +123,7 @@ posts.delete("/", authenticate, (req, res, next) => {
         const error = new Error(
           `Cannot delete post as you do not own the post with id: ${body.id}`
         );
-        error.statusCode = 404;
+        error.statusCode = 401;
         throw error;
       } else {
         return post.destroy();
