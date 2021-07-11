@@ -20,13 +20,11 @@ app.use(
   })
 );
 
-app.set('views', "../app/views");
-app.set('view engine', 'ejs');
-
 app.get('/', function(req, res) {
   res.redirect('/ui');
 });
 
+express.static("../app");
 app.use(express.static("../app/public"));
 app.use("/ui", require("./routes/ui"));
 

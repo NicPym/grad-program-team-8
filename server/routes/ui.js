@@ -2,11 +2,10 @@ const path = require('path');
 const ui = require("express").Router();
 const authenticate = require("../util/authenticate");
 
-const appDir = path.resolve(__dirname, '../../') + '/app/';
+const appDir = path.resolve(__dirname, '../../') + '/app/views';
 
 ui.get("/", function( req, res ) {
-  // res.sendFile(path.join(appDir, 'index.html'));
-  res.render('index');
+  res.sendFile(path.join(appDir, 'index.html'));
 });
 
 ui.get("/profile", authenticate, function( req, res ) {
