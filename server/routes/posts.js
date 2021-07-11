@@ -25,6 +25,28 @@ posts.get("/", (req, res, next) => {
     .catch((err) => next(err));
 });
 
+posts.get("/:id", (req, res, next) => {
+  models.Post.findOne({
+    where: {
+      pkPost: req.params.id,
+    },
+  })
+    .then((post) => {
+      if (!post) {
+        const error = new Error("Blog Post Not Found");
+        error.statusCode = 404;
+        throw error;
+      } else {
+        res.json({
+          title: post.cTitle,
+          description: post.cDescription,
+          text: post.cText,
+        });
+      }
+    })
+    .catch((err) => next(err));
+});
+
 posts.put("/", authenticate, (req, res, next) => {
   const body = req.body;
 
@@ -48,12 +70,14 @@ posts.put("/", authenticate, (req, res, next) => {
     .then((post) => {
       const { rows } = dataCleaner(post);
       if (rows.length == 0) {
-        res.sendStatus(404);
+        const error = new Error(`Post with id: ${body.id} does not exist`);
+        error.statusCode = 404;
+        throw error;
       } else if (rows[0].ownerId != req.token.id) {
         const error = new Error(
           `Cannot edit post as you do not own the post with id: ${body.id}`
         );
-        error.statusCode = 404;
+        error.statusCode = 401;
         throw error;
       } else {
         return post.update({
@@ -94,7 +118,7 @@ posts.delete("/", authenticate, (req, res, next) => {
     .then((post) => {
       const { rows } = dataCleaner(post);
       if (rows.length == 0) {
-        res.sendStatus(200);
+        return;
       } else if (rows[0].ownerId != req.token.id) {
         const error = new Error(
           `Cannot delete post as you do not own the post with id: ${body.id}`
