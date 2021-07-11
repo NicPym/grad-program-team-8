@@ -20,4 +20,8 @@ ui.get("/blog-post", function( req, res ) {
   res.sendFile(path.join(appDir, "pages", "blog-post",  "index.html"));
 });
 
+ui.get("/not-found", function( req, res ) {
+  res.sendFile(path.join(appDir, "pages", "not-found",  "index.html"));
+});
+
 module.exports = ui;
