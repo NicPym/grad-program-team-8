@@ -15,6 +15,7 @@ app.use(
   helmet.contentSecurityPolicy({
     useDefaults: true,
     directives: {
+      "script-src-attr": ["'unsafe-inline'"],
       scriptSrc: ["'self'", "'unsafe-inline'", "https://code.jquery.com", "https://cdnjs.cloudflare.com", "https://stackpath.bootstrapcdn.com"],
     },
   })
