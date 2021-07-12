@@ -4,7 +4,7 @@ Blog web app for Team 8 displaying security principles.
 
 ## How to start up the server
 
-Navigate to the docker directory and run `docker-compose build`, followed by `docker-compose-up` to start the application.
+Navigate to the docker directory and run `docker-compose build`, followed by `docker-compose-up` to start the application. The application is hosted at `https://localhost:8080`.
 
 ## Implementation
 

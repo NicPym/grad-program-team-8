@@ -114,6 +114,52 @@ blogs.get("/", authenticate, (req, res, next) => {
     .catch((err) => next(err));
 });
 
+blogs.get("/my-blogs", authenticate, (req, res, next) => {
+  models.Blog.findAll({
+    where: {
+      fkUser: req.token.id,
+    },
+    include: [
+      {
+        model: models.User,
+        attributes: [
+          [
+            sequelize.fn(
+              "concat",
+              sequelize.col("cFirstName"),
+              " ",
+              sequelize.col("cLastName")
+            ),
+            "owner",
+          ],
+        ],
+      },
+      {
+        model: models.Subscription,
+        attributes: ["fkUser"],
+      },
+    ],
+  })
+    .then((blogs) => {
+      if (blogs.length == 0) {
+        res.json([]);
+      } else {
+        const { rows } = dataCleaner(blogs);
+        res.json(
+          rows.map((row) => {
+            return {
+              id: row.pkBlog,
+              description: row.cDescription,
+              subscriberCount: row.iSubscriberCount,
+              owner: row.owner,
+            };
+          })
+        );
+      }
+    })
+    .catch((err) => next(err));
+});
+
 blogs.get("/:id", (req, res, next) => {
   models.Blog.findOne({
     where: {
@@ -406,52 +452,6 @@ blogs.get("/subscriptions", (req, res, next) => {
               description: rows[0].cDescription,
               subscriberCount: rows[0].iSubscriberCount,
               owner: rows[0].owner,
-            };
-          })
-        );
-      }
-    })
-    .catch((err) => next(err));
-});
-
-blogs.get("/my-blogs", authenticate, (req, res, next) => {
-  models.Blog.findAll({
-    where: {
-      fkUser: req.token.id,
-    },
-    include: [
-      {
-        model: models.User,
-        attributes: [
-          [
-            sequelize.fn(
-              "concat",
-              sequelize.col("cFirstName"),
-              " ",
-              sequelize.col("cLastName")
-            ),
-            "owner",
-          ],
-        ],
-      },
-      {
-        model: models.Subscription,
-        attributes: ["fkUser"],
-      },
-    ],
-  })
-    .then((blogs) => {
-      if (blogs.length == 0) {
-        res.json([]);
-      } else {
-        const { rows } = dataCleaner(blogs);
-        res.json(
-          rows.map((row) => {
-            return {
-              id: row.pkBlog,
-              description: row.cDescription,
-              subscriberCount: row.iSubscriberCount,
-              owner: row.owner,
             };
           })
         );
