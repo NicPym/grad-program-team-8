@@ -4,7 +4,9 @@ Blog web app for Team 8 displaying security principles.
 
 ## How to start up the server
 
-Navigate to the docker directory and run `docker-compose build`, followed by `docker-compose-up` to start the application. The application is hosted at `https://localhost:8080`.
+Navigate to the `docker` directory and run `docker-compose build`, followed by `docker-compose-up` to start the application. The application is hosted at `https://localhost:8080`.
+
+When loading the website, one will notice the your browser will say that the site in unsafe. This is because this app uses a self signed certificate (`server.cert`) located in the server `directory`. To remove this error, you can either click advanced and proceed or install the certificate on your system.
 
 ## Implementation
 
