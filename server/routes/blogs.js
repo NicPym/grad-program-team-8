@@ -2,43 +2,113 @@ const blogs = require("express").Router();
 const authenticate = require("../util/authenticate");
 const models = require("../models").sequelize.models;
 const { sequelize } = require("../models");
+const { Op } = require("sequelize");
 const { dataCleaner, formatDate } = require("../util/helpers");
 
-blogs.get("/", (req, res, next) => {
-  models.Blog.findAll({
-    include: [
-      {
-        model: models.User,
-        attributes: [
-          [
-            sequelize.fn(
-              "concat",
-              sequelize.col("cFirstName"),
-              " ",
-              sequelize.col("cLastName")
-            ),
-            "owner",
-          ],
-        ],
-      },
-    ],
-  })
-    .then((blogs) => {
-      if (blogs.length == 0) {
-        return res.json([]);
-      } else {
-        const { rows } = dataCleaner(blogs);
+blogs.get("/", authenticate, (req, res, next) => {
+  let blogs = [];
 
-        res.json(
+  models.Subscription.findAll({
+    where: {
+      fkUser: req.token.id,
+    },
+  })
+    .then((subscriptions) => {
+      if (subscriptions.length == 0) {
+        return [];
+      } else {
+        const { rows } = dataCleaner(subscriptions);
+        return Promise.all(
           rows.map((row) => {
-            return {
-              id: row.pkBlog,
-              description: row.cDescription,
-              subscriberCount: row.iSubscriberCount,
-              owner: row.owner,
-            };
+            return models.Blog.findOne({
+              where: {
+                pkBlog: row.fkBlog,
+              },
+              include: [
+                {
+                  model: models.User,
+                  attributes: [
+                    [
+                      sequelize.fn(
+                        "concat",
+                        sequelize.col("cFirstName"),
+                        " ",
+                        sequelize.col("cLastName")
+                      ),
+                      "owner",
+                    ],
+                  ],
+                },
+                {
+                  model: models.Subscription,
+                  attributes: ["fkUser"],
+                },
+              ],
+            });
           })
         );
+      }
+    })
+    .then((subscribedBlogs) => {
+      if (subscribedBlogs.length != 0) {
+        const { rows } = dataCleaner(subscribedBlogs);
+
+        rows.forEach((row) => {
+          blogs.push({
+            id: row.pkBlog,
+            description: row.cDescription,
+            subscriberCount: row.iSubscriberCount,
+            owner: row.owner,
+            subscribed: true,
+          });
+        });
+      }
+
+      return models.Blog.findAll({
+        where: {
+          pkBlog: {
+            [Op.notIn]: blogs.map((blog) => blog.id),
+          },
+        },
+        include: [
+          {
+            model: models.User,
+            attributes: [
+              [
+                sequelize.fn(
+                  "concat",
+                  sequelize.col("cFirstName"),
+                  " ",
+                  sequelize.col("cLastName")
+                ),
+                "owner",
+              ],
+            ],
+          },
+          {
+            model: models.Subscription,
+            attributes: ["fkUser"],
+          },
+        ],
+      });
+    })
+    .then((unsubscribedBlogs) => {
+      if (unsubscribedBlogs.length == 0) {
+        return res.json(blogs);
+      } else {
+        const { rows } = dataCleaner(unsubscribedBlogs);
+
+        rows.forEach((row) => {
+          blogs.push({
+            id: row.pkBlog,
+            description: row.cDescription,
+            subscriberCount: row.iSubscriberCount,
+            owner: row.owner,
+            subscribed: false,
+          });
+        });
+
+        res.json(blogs);
       }
     })
     .catch((err) => next(err));
@@ -226,7 +296,7 @@ blogs.get("/:id/posts", (req, res, next) => {
 
 blogs.post("/:id/posts", authenticate, (req, res, next) => {
   const body = req.body;
-  console.log('bodies',body);
+  console.log("bodies", body);
 
   if (!body.text || !body.title || !body.description) {
     const error = new Error("Data not formatted properly");
@@ -365,6 +435,46 @@ blogs.post("/:id/subscribe", authenticate, (req, res, next) => {
       return models.Blog.increment("iSubscriberCount", {
         by: 1,
         where: { pkBlog: subscription.fkBlog },
+      });
+    })
+    .then((_) => {
+      res.sendStatus(200);
+    })
+    .catch((err) => next(err));
+});
+
+blogs.post("/:id/unsubscribe", authenticate, (req, res, next) => {
+  models.Blog.findOne({
+    where: {
+      pkBlog: req.params.id,
+    },
+  })
+    .then((blog) => {
+      if (!blog) {
+        const error = new Error(
+          `Blog with id: ${req.params.id} does not exist`
+        );
+        error.statusCode = 400;
+        throw error;
+      } else {
+        return models.Subscription.findOne({
+          where: { fkUser: req.token.id, fkBlog: req.params.id },
+        });
+      }
+    })
+    .then((subscription) => {
+      if (!subscription) {
+        const error = new Error(`You are not subscribed to this blog`);
+        error.statusCode = 400;
+        throw error;
+      } else {
+        return subscription.destroy();
+      }
+    })
+    .then((_) => {
+      return models.Blog.decrement("iSubscriberCount", {
+        by: 1,
+        where: { pkBlog: req.params.id },
       });
     })
     .then((_) => {
