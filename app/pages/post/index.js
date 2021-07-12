@@ -53,6 +53,7 @@ document.forms["blog-post-form"].addEventListener("submit", (event) => {
             })
             .then((body) => {
               console.log(body);
+              window.history.back();
             })
             .catch((error) => {
               alert("Post Create Failed");
@@ -80,6 +81,7 @@ document.forms["blog-post-form"].addEventListener("submit", (event) => {
             })
             .then((body) => {
               console.log(body);
+              window.history.back();
             })
             .catch((error) => {
               alert("Save Failed");

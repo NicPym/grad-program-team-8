@@ -1,5 +1,6 @@
 const getCardTemplate = (title, subscriberCount, description, blogID, subscribeFunc, subscribeText) => {
   const card = document.createElement("div");
+  const className = subscribeText === "Subscribe" ? "btn btn-success mt-2" : "btn btn-danger mt-2";
   card.innerHTML = `
     <div class="card mt-4">
         <div class="card-body">
@@ -8,7 +9,7 @@ const getCardTemplate = (title, subscriberCount, description, blogID, subscribeF
             <div class="card-text mb-2">${description}</div>
             <div>
                 <a href="/posts/?blogID=${blogID}" class="btn btn-info mt-2">Read more</a>
-                <a id="subscribe-btn-#${blogID}" onclick="${subscribeFunc}(event)" class="btn btn-success mt-2">${subscribeText}</a>
+                <a id="subscribe-btn-#${blogID}" onclick="${subscribeFunc}(event)" class="${className}">${subscribeText}</a>
             </div>
         </div>
     </div>
@@ -29,6 +30,7 @@ function subscribeClicked(event) {
       }
 
       event.target.innerHTML = 'Unsubscribe';
+      event.target.className = 'btn btn-danger mt-2';
       document.getElementById(subscribeButtonId).onclick = unSubscribeClicked;
 
     }).catch((err) => {
@@ -51,6 +53,8 @@ function unSubscribeClicked(event) {
       }
 
       event.target.innerHTML = 'Subscribe';
+      event.target.className = 'btn btn-success mt-2';
+
       document.getElementById(subscribeButtonId).onclick = subscribeClicked;
 
     }).catch((err) => {
