@@ -50,8 +50,16 @@ posts.get("/:id", (req, res, next) => {
 posts.put("/", authenticate, (req, res, next) => {
   const body = req.body;
 
-  if (!(body.id && body.text)) {
+  if (!(body.id && body.text && body.title && body.description)) {
     const error = new Error("Data not formatted properly");
+    error.statusCode = 400;
+    throw error;
+  } else if (body.title.length > 255) {
+    const error = new Error("The post's title is too large");
+    error.statusCode = 400;
+    throw error;
+  } else if (body.description.length > 1024) {
+    const error = new Error("The post's description is too large");
     error.statusCode = 400;
     throw error;
   }

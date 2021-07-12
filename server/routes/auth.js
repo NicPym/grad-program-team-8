@@ -26,6 +26,14 @@ auth.post("/login", (req, res, next) => {
     const error = new Error("Data not formatted properly");
     error.statusCode = 400;
     throw error;
+  } else if (body.password.length < 6) {
+    const error = new Error("Password should be 6 or more characters long");
+    error.statusCode = 400;
+    throw error;
+  } else if (body.email.length > 255) {
+    const error = new Error("Email is too long");
+    error.statusCode = 400;
+    throw error;
   }
 
   models.User.findOne({

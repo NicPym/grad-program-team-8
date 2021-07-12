@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       cDescription: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.STRING(1024),
         allowNull: false,
       },
       cText: {

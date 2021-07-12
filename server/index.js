@@ -1,7 +1,8 @@
+const https = require("https");
 const express = require("express");
 const app = express();
+const fs = require("fs");
 const helmet = require("helmet");
-const cors = require("cors");
 const logger = require("./util/winston");
 const { sequelize } = require("./models");
 require("dotenv").config(".env");
@@ -16,14 +17,6 @@ app.use(
     directives: {
       "script-src-attr": ["'unsafe-inline'"],
     },
-  })
-);
-
-app.use(
-  cors({
-    origin: "",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
@@ -46,17 +39,24 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message: message, data: data, success: false });
 });
 
-// Syncs tables to the db
 sequelize
   .sync({ alter: true })
   // .sync()
   .then(() => {
-    const server = app.listen(port, () => {
-      logger.log({
-        logger: "info",
-        message: `[Index.js]\tServer listening at http://localhost:${port}.`,
+    https
+      .createServer(
+        {
+          key: fs.readFileSync("server.key"),
+          cert: fs.readFileSync("server.cert"),
+        },
+        app
+      )
+      .listen(port, () => {
+        logger.log({
+          logger: "info",
+          message: `[Index.js]\tServer listening at http://localhost:${port}.`,
+        });
       });
-    });
   })
   .catch((error) => {
     logger.log({

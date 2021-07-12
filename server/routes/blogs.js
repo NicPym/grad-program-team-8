@@ -164,6 +164,10 @@ blogs.post("/", authenticate, (req, res, next) => {
     const error = new Error("Data not formatted properly");
     error.statusCode = 400;
     throw error;
+  } else if (body.description.length > 2048) {
+    const error = new Error("The blog's description is too large");
+    error.statusCode = 400;
+    throw error;
   }
 
   models.Blog.create({
@@ -187,6 +191,10 @@ blogs.put("/", authenticate, (req, res, next) => {
 
   if (!(body.id && body.description)) {
     const error = new Error("Data not formatted properly");
+    error.statusCode = 400;
+    throw error;
+  } else if (body.description.length > 2048) {
+    const error = new Error("The blog's description is too large");
     error.statusCode = 400;
     throw error;
   }
@@ -300,6 +308,14 @@ blogs.post("/:id/posts", authenticate, (req, res, next) => {
 
   if (!body.text || !body.title || !body.description) {
     const error = new Error("Data not formatted properly");
+    error.statusCode = 400;
+    throw error;
+  } else if (body.title.length > 255) {
+    const error = new Error("The post's title is too large");
+    error.statusCode = 400;
+    throw error;
+  } else if (body.description.length > 1024) {
+    const error = new Error("The post's description is too large");
     error.statusCode = 400;
     throw error;
   }
