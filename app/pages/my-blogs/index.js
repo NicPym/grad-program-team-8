@@ -7,7 +7,7 @@ const getCardTemplate = (title, subscriberCount, description, blogID) => {
             <div class="card-subtitle text-muted mb-2">${subscriberCount} subscribers</div>
             <div class="card-text mb-2">${description}</div>
             <div>
-                <a href="/posts/?blogID=${blogID}" class="btn btn-info mt-2">Read more</a>
+                <a href="/my-posts/?blogID=${blogID}" class="btn btn-info mt-2">View Blog</a>
                 <a id="edit-btn-${blogID}" class="btn btn-warning mt-2">Edit</a>
                 <a onclick="deleteBlog(${blogID})" class="btn btn-danger mt-2">Delete</a>
             </div>

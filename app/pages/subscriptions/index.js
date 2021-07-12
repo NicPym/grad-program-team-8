@@ -8,7 +8,7 @@ const getCardTemplate = (title, subscriberCount, description, blogID) => {
             <div class="card-text mb-2">${description}</div>
             <div>
                 <a href="/posts/?blogID=${blogID}" class="btn btn-info mt-2">Read more</a>
-                <a id="subscribe-btn-#${blogID}" onclick="unSubscribeClicked(event)" class="btn btn-success mt-2">Unsubscribe</a>
+                <a id="subscribe-btn-#${blogID}" onclick="unSubscribeClicked(event)" class="btn btn-danger mt-2">Unsubscribe</a>
             </div>
         </div>
     </div>

@@ -89,6 +89,8 @@ posts.put("/", authenticate, (req, res, next) => {
         throw error;
       } else {
         return post.update({
+          cTitle: body.title,
+          cDescription: body.description,
           cText: body.text,
         });
       }

@@ -45,4 +45,8 @@ ui.get("/my-blogs", function (req, res) {
   res.sendFile(path.join(appDir, "pages", "my-blogs", "index.html"));
 });
 
+ui.get("/my-posts", function (req, res) {
+  res.sendFile(path.join(appDir, "pages", "my-posts", "index.html"));
+});
+
 module.exports = ui;
