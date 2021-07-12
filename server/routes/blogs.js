@@ -234,7 +234,7 @@ blogs.post("/", authenticate, (req, res, next) => {
 
 blogs.put("/", authenticate, (req, res, next) => {
   const body = req.body;
-
+  console.log("BODY IS", body);
   if (!(body.id && body.description)) {
     const error = new Error("Data not formatted properly");
     error.statusCode = 400;
