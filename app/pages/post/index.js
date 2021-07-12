@@ -16,6 +16,17 @@ window.onload = async function () {
         localStorage.setItem('doingPostCreate', false);
         localStorage.setItem('edit-post-with-id', params.get('postID'));
 
+        getBlogPostById(params.get('postID'))
+          .then(async (res) => {
+
+            const data = await res.json();
+
+            document.getElementById("blog-post-title").value = data.title;
+            document.getElementById("blog-post-description").innerHTML = data.description;
+            document.getElementById("blog-post-markdown").innerHTML = data.text;
+          }).catch((err) => {
+            console.log(err);
+          });
     } else {
         window.location.href = "/blogs";
     }

@@ -1,11 +1,5 @@
 const params = new URLSearchParams(window.location.search);
 const postId = params.get("postID");
-async function getBlogPostById(postId) {
-  const response = await fetch(`/api/posts/${postId}`, {
-    method: "GET",
-  });
-  return response;
-}
 
 window.onload = () => {
   console.log("onload");
