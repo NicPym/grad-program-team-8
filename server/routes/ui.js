@@ -5,11 +5,7 @@ const authenticate = require("../util/authenticate");
 const appDir = path.resolve(__dirname, "../../") + "/app/";
 
 ui.get("/", function (req, res) {
-  res.sendFile(path.join(appDir, "pages", "profile", "index.html"));
-});
-
-ui.get("/profile", function (req, res) {
-  res.sendFile(path.join(appDir, "pages", "profile", "index.html"));
+  res.sendFile(path.join(appDir, "pages", "blogs", "index.html"));
 });
 
 ui.get("/login", function (req, res) {
@@ -28,12 +24,12 @@ ui.get("/posts", function (req, res) {
   res.sendFile(path.join(appDir, "pages", "posts", "index.html"));
 });
 
-ui.get("/post/add", function( req, res ) {
-  res.sendFile(path.join(appDir, "pages", "post",  "index.html"));
+ui.get("/post/add", function (req, res) {
+  res.sendFile(path.join(appDir, "pages", "post", "index.html"));
 });
 
-ui.get("/post/edit", function( req, res ) {
-  res.sendFile(path.join(appDir, "pages", "post",  "index.html"));
+ui.get("/post/edit", function (req, res) {
+  res.sendFile(path.join(appDir, "pages", "post", "index.html"));
 });
 
 module.exports = ui;
