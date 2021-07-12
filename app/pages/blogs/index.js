@@ -1,4 +1,4 @@
-const getCardTemplate = (title, subscriberCount, description, blogID) => {
+const getCardTemplate = (title, subscriberCount, description, blogID, subscribeFunc, subscribeText) => {
   const card = document.createElement("div");
   card.innerHTML = `
     <div class="card mt-4">
@@ -8,13 +8,55 @@ const getCardTemplate = (title, subscriberCount, description, blogID) => {
             <div class="card-text mb-2">${description}</div>
             <div>
                 <a href="/posts/?blogID=${blogID}" class="btn btn-info mt-2">Read more</a>
-                <a href="" class="btn btn-success mt-2">Subscribe</a>
+                <a id="subscribe-btn-#${blogID}" onclick="${subscribeFunc}(event)" class="btn btn-success mt-2">${subscribeText}</a>
             </div>
         </div>
     </div>
     `;
   return card;
 };
+
+function subscribeClicked(event) {
+  const subscribeButtonId = event.target.id;
+  const blogId = event.target.id.split('#')[1];
+  console.log('Subscribe clicked', blogId);
+
+  postSubscribeToBlogById(blogId)
+    .then((res) => {
+      console.log(res);
+      if (!res.ok) {
+        return;
+      }
+
+      event.target.innerHTML = 'Unsubscribe';
+      document.getElementById(subscribeButtonId).onclick = unSubscribeClicked;
+
+    }).catch((err) => {
+      console.log(err);
+    });
+
+}
+
+function unSubscribeClicked(event) {
+  const subscribeButtonId = event.target.id;
+  const blogId = event.target.id.split('#')[1];
+
+  console.log('UnSubscribe clicked', blogId);
+
+  postUnSubscribeToBlogById(blogId)
+    .then((res) => {
+      console.log(res);
+      if (!res.ok) {
+        return;
+      }
+
+      event.target.innerHTML = 'Subscribe';
+      document.getElementById(subscribeButtonId).onclick = subscribeClicked;
+
+    }).catch((err) => {
+      console.log(err);
+    });
+}
 
 //function to append element to the element with the id specified
 const appendCard = (id, element) => {
@@ -49,16 +91,23 @@ window.onload = function () {
       document.getElementById("empty-placeholder").style.display = "none";
       json.forEach((blog) => {
         console.log(blog);
+
         let owner = blog.owner;
         let title = owner + "'s blog";
         let subscriberCount = blog.subscriberCount;
         let description = blog.description;
+        const subscribeFunc = blog.subscribed ? "unSubscribeClicked" : "subscribeClicked";
+        const subscribeText = blog.subscribed ? "Unsubscribe" : "Subscribe";
+
         let element = getCardTemplate(
           title,
           subscriberCount,
           description,
-          blog.id
+          blog.id,
+          subscribeFunc,
+          subscribeText,
         );
+
         document.getElementById("blog-list").appendChild(element);
       });
     });

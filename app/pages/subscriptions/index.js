@@ -1,20 +1,40 @@
-const getCardTemplate = (title, subscriberCount, description) => {
+const getCardTemplate = (title, subscriberCount, description, blogID) => {
   const card = document.createElement("div");
   card.innerHTML = `
-	  <div class="card mt-4">
-		  <div class="card-body">
-			  <h4>${title}</h4>
-			  <div class="card-subtitle text-muted mb-2">${subscriberCount} subscribers</div>
-			  <div class="card-text mb-2">${description}</div>
-			  <div>
-				  <button class="btn btn-info mt-2">Read more</button>
-				  <button class="btn btn-success mt-2">Subscribe</button>
-			  </div>
-		  </div>
-	  </div>
-	  `;
+    <div class="card mt-4">
+        <div class="card-body">
+            <h4>${title}</h4>
+            <div class="card-subtitle text-muted mb-2">${subscriberCount} subscribers</div>
+            <div class="card-text mb-2">${description}</div>
+            <div>
+                <a href="/posts/?blogID=${blogID}" class="btn btn-info mt-2">Read more</a>
+                <a id="subscribe-btn-#${blogID}" onclick="unSubscribeClicked(event)" class="btn btn-success mt-2">Unsubscribe</a>
+            </div>
+        </div>
+    </div>
+    `;
   return card;
 };
+
+function unSubscribeClicked(event) {
+  const subscribeButtonId = event.target.id;
+  const blogId = event.target.id.split('#')[1];
+
+  console.log('UnSubscribe clicked', blogId);
+
+  postUnSubscribeToBlogById(blogId)
+    .then((res) => {
+      console.log(res);
+      if (!res.ok) {
+        return;
+      }
+      location.reload();
+
+    }).catch((err) => {
+      console.log(err);
+      alert('Unsubscribe Failed');
+    });
+}
 
 //function to append element to the element with the id specified
 const appendCard = (id, element) => {
@@ -52,7 +72,16 @@ window.onload = function () {
         let title = owner + "'s blog";
         let subscriberCount = blog.subscriberCount;
         let description = blog.description;
-        let element = getCardTemplate(title, subscriberCount, description);
+
+        console.log({subscribed: blog.subscribed});
+
+        let element = getCardTemplate(
+          title,
+          subscriberCount,
+          description,
+          blog.id,
+        );
+
         document.getElementById("blog-list").appendChild(element);
       });
     });

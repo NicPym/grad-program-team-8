@@ -39,17 +39,25 @@ window.onload = async function () {
     const blog = await fetch(`/api/blogs/${blogId}`, {
       method: "GET",
     });
-    const blogJSON = await blog.json();``
+
+    const posts = await fetch(`/api/blogs/${blogId}/posts`, {
+      method: "GET",
+    });
+
+    const blogJSON = await blog.json();
     console.log("blog",blogJSON);
-    document.getElementById("blog-title").innerHTML = `${blogJSON.owner}'s Blog`; 
-    const response = await getBlogPostById(blogId)
-    const posts = await response.json();
+
+    const postsJSON = await posts.json();
+    console.log("posts", postsJSON);
+
+    document.getElementById("blog-title").innerHTML = `${blogJSON.owner}'s Blog`;
+
     if (posts.length === 0) {
       console.log("No posts found");
       return
     }
     document.getElementById("empty-placeholder").style.display = "none";
-    posts.forEach(post => {
+    postsJSON.forEach(post => {
       console.log(post);
       const card = getCardTemplate(post.title, post.createdAt, post.description, post.id);
       appendCard("post-list", card);
