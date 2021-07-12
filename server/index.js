@@ -15,7 +15,7 @@ app.use(
   helmet.contentSecurityPolicy({
     useDefaults: true,
     directives: {
-      "script-src-attr": ["'unsafe-inline'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://code.jquery.com", "https://cdnjs.cloudflare.com", "https://stackpath.bootstrapcdn.com"],
     },
   })
 );
@@ -43,20 +43,12 @@ sequelize
   .sync({ alter: true })
   // .sync()
   .then(() => {
-    https
-      .createServer(
-        {
-          key: fs.readFileSync("server.key"),
-          cert: fs.readFileSync("server.cert"),
-        },
-        app
-      )
-      .listen(port, () => {
-        logger.log({
-          logger: "info",
-          message: `[Index.js]\tServer listening at http://localhost:${port}.`,
-        });
+    const server = app.listen(port, () => {
+      logger.log({
+        logger: "info",
+        message: `[Index.js]\tServer listening at http://localhost:${port}.`,
       });
+    });
   })
   .catch((error) => {
     logger.log({
