@@ -6,16 +6,38 @@
     </button>
     <div class="collapse navbar-collapse nav-links" id="navbarNav">
         <ul class="navbar-nav">
-            <li class="nav-item active">
+            <li id="all-blogs-link" class="nav-item">
                 <a class="nav-link" href="/blogs">ALL BLOGS</a>
             </li>
-            <li class="nav-item">
+            <li id="subscriptions-link" class="nav-item">
                 <a class="nav-link" href="/subscriptions">SUBSCRIPTIONS </a>
             </li>
-            <li class="nav-item">
+            <li id="my-blogs-link" class="nav-item">
                 <a class="nav-link" href="/my-blogs">MY BLOGS</a>
             </li>
         </ul>
         <button class="sign-out-btn" onclick="logOut()">SIGN OUT</button>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+    <script>
+        let first = $(location).attr('pathname');
+        first.indexOf(1);
+        first.toLowerCase();
+        first = first.split("/")[1];
+
+        if (first == "my-blogs")
+            document.getElementById("my-blogs-link").classList.add("active");
+        else if (first == "blogs")
+            document.getElementById("all-blogs-link").classList.add("active");
+        else if (first == "subscriptions")
+            document.getElementById("subscriptions-link").classList.add("active");
+    </script>
 </nav>
