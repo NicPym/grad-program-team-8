@@ -28,6 +28,15 @@ ui.get("/posts", function (req, res) {
   res.sendFile(path.join(appDir, "pages", "posts", "index.html"));
 });
 
+ui.get("/post/add", function( req, res ) {
+  res.sendFile(path.join(appDir, "pages", "post",  "index.html"));
+});
+
+ui.get("/post/edit", function( req, res ) {
+  res.sendFile(path.join(appDir, "pages", "post",  "index.html"));
+});
+
+module.exports = ui;
 ui.get("/blog-post", function (req, res) {
   res.sendFile(path.join(appDir, "pages", "blog-post", "index.html"));
 });
