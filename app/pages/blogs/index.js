@@ -1,6 +1,16 @@
-const getCardTemplate = (title, subscriberCount, description, blogID, subscribeFunc, subscribeText) => {
+const getCardTemplate = (
+  title,
+  subscriberCount,
+  description,
+  blogID,
+  subscribeFunc,
+  subscribeText
+) => {
   const card = document.createElement("div");
-  const className = subscribeText === "Subscribe" ? "btn btn-success mt-2" : "btn btn-danger mt-2";
+  const className =
+    subscribeText === "Subscribe"
+      ? "btn btn-success mt-2"
+      : "btn btn-danger mt-2";
   card.innerHTML = `
     <div class="card mt-4">
         <div class="card-body">
@@ -19,45 +29,41 @@ const getCardTemplate = (title, subscriberCount, description, blogID, subscribeF
 
 function subscribeClicked(event) {
   const subscribeButtonId = event.target.id;
-  const blogId = event.target.id.split('#')[1];
-  console.log('Subscribe clicked', blogId);
+  const blogId = event.target.id.split("#")[1];
 
   postSubscribeToBlogById(blogId)
     .then((res) => {
-      console.log(res);
       if (!res.ok) {
         return;
       }
 
-      event.target.innerHTML = 'Unsubscribe';
-      event.target.className = 'btn btn-danger mt-2';
+      event.target.innerHTML = "Unsubscribe";
+      event.target.className = "btn btn-danger mt-2";
       document.getElementById(subscribeButtonId).onclick = unSubscribeClicked;
-
-    }).catch((err) => {
+    })
+    .catch((err) => {
       console.log(err);
     });
-
 }
 
 function unSubscribeClicked(event) {
   const subscribeButtonId = event.target.id;
-  const blogId = event.target.id.split('#')[1];
+  const blogId = event.target.id.split("#")[1];
 
-  console.log('UnSubscribe clicked', blogId);
+  console.log("UnSubscribe clicked", blogId);
 
   postUnSubscribeToBlogById(blogId)
     .then((res) => {
-      console.log(res);
       if (!res.ok) {
         return;
       }
 
-      event.target.innerHTML = 'Subscribe';
-      event.target.className = 'btn btn-success mt-2';
+      event.target.innerHTML = "Subscribe";
+      event.target.className = "btn btn-success mt-2";
 
       document.getElementById(subscribeButtonId).onclick = subscribeClicked;
-
-    }).catch((err) => {
+    })
+    .catch((err) => {
       console.log(err);
     });
 }
@@ -70,7 +76,6 @@ const appendCard = (id, element) => {
 
 // Get the blogs from the server
 window.onload = function () {
-  console.log("onload");
   let blogsEndpoint = "/api/blogs";
   fetch(blogsEndpoint, {
     headers: new Headers({
@@ -87,20 +92,18 @@ window.onload = function () {
       }
     })
     .then((json) => {
-      // check if the json is empty
       if (json.length === 0) {
-        console.log("No blogs found");
         return;
       }
       document.getElementById("empty-placeholder").style.display = "none";
       json.forEach((blog) => {
-        console.log(blog);
-
         let owner = blog.owner;
         let title = owner + "'s blog";
         let subscriberCount = blog.subscriberCount;
         let description = blog.description;
-        const subscribeFunc = blog.subscribed ? "unSubscribeClicked" : "subscribeClicked";
+        const subscribeFunc = blog.subscribed
+          ? "unSubscribeClicked"
+          : "subscribeClicked";
         const subscribeText = blog.subscribed ? "Unsubscribe" : "Subscribe";
 
         let element = getCardTemplate(
@@ -109,7 +112,7 @@ window.onload = function () {
           description,
           blog.id,
           subscribeFunc,
-          subscribeText,
+          subscribeText
         );
 
         document.getElementById("blog-list").appendChild(element);

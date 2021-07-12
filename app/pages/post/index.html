@@ -1,49 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../css/style.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
-    <!-- <link rel="stylesheet" href="../styles/forms_fields.css"> -->
-    <script src="../../pages/post/index.js" async></script>
-    <script src="../../js/index.js" defer></script>
-    <title>New</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="../../pages/post/index.js" async></script>
+  <script src="../../js/index.js" defer></script>
+  <title>New</title>
 </head>
+
 <body>
   <div id="nav-placeholder" style="all: initial; font-family: inherit;"></div>
 
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+    integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
   <script>
-      $(function(){
+    $(function () {
       $("#nav-placeholder").load("../../html/NavBar.html");
-      });
+    });
   </script>
 
   <div class="container">
-      <h1 id="create-edit-post-title" class="mb-4">New Article</h1>
-      <!-- allows to render the html -->
-      <form id="blog-post-form">
+    <h1 id="create-edit-post-title" class="mb-4">New Article</h1>
+    <form id="blog-post-form">
       <div class="form-group">
-          <label for="title">Title</label>
-          <input id="blog-post-title" type="text"  name="title" class="form-control" required/>
-        </div>
-        <div class="form-group">
-          <label for="description">Description</label>
-          <textarea id="blog-post-description" style="height: 5vh;" name="description" class="form-control" required></textarea>
-        </div>
-        <div class="form-group">
-          <label for="text">Markdown</label>
-          <textarea id="blog-post-markdown" name="text" class="form-control" required></textarea>
-        </div>
+        <label for="title">Title</label>
+        <input id="blog-post-title" type="text" name="title" class="form-control" required />
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="blog-post-description" style="height: 5vh;" name="description" class="form-control"
+          required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="text">Markdown</label>
+        <textarea id="blog-post-markdown" name="text" class="form-control" required></textarea>
+      </div>
 
-        <a href="/articles" class="btn btn-secondary mt-2">Cancel</a>
-        <button type="submit" class="btn btn-primary mt-2">Save</button>
-      </form>
+      <a href="/articles" class="btn btn-secondary mt-2">Cancel</a>
+      <button type="submit" class="btn btn-primary mt-2">Save</button>
+    </form>
   </div>
 </body>
+
 </html>

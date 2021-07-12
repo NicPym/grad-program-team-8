@@ -27,6 +27,7 @@ const getFormTemplate = (blogID, description) => {
 							<label for="description">Description</label>
 							<input type="text" class="form-control" id="description-${blogID}" name="description"
 								value="${description}">
+              <br>
 							<button type="submit" class="btn btn-primary">Save</button>
 						</div>
 					</div>
@@ -37,27 +38,21 @@ const getFormTemplate = (blogID, description) => {
 };
 
 const editBlog = (blogID, oldDescription) => {
-  console.log("edit blog called with params:", blogID);
   let form = getFormTemplate(blogID, oldDescription);
 
   form.addEventListener("submit", (event) => {
-    console.log("submit");
     const description = document.getElementById(`description-${blogID}`).value;
-    console.log("body", {
-      id: blogID,
-      description: description
-    });
     event.preventDefault();
-    fetch('/api/blogs', {
+    fetch("/api/blogs", {
       method: "PUT",
       headers: new Headers({
-        'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-        'Content-Type': 'application/json'
+        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+        "Content-Type": "application/json",
       }),
       body: JSON.stringify({
         id: blogID,
-        description: description
-      })
+        description: description,
+      }),
     })
       .then((resp) => {
         if (!resp.ok) {
@@ -66,7 +61,6 @@ const editBlog = (blogID, oldDescription) => {
         return resp.json();
       })
       .then((body) => {
-        console.log(body);
         location.reload();
       })
       .catch((error) => {
@@ -78,40 +72,36 @@ const editBlog = (blogID, oldDescription) => {
 };
 
 const deleteBlog = (blogID) => {
-  fetch('/api/blogs', {
+  fetch("/api/blogs", {
     method: "DELETE",
     headers: new Headers({
-      'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-      'Content-Type': 'application/json'
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      "Content-Type": "application/json",
     }),
-    body: JSON.stringify({ id: blogID })
+    body: JSON.stringify({ id: blogID }),
   }).then((resp) => {
     if (!resp.ok) {
-      throw new Error(resp.statusText)
-    }
-    else {
+      throw new Error(resp.statusText);
+    } else {
       location.reload();
     }
-  })
+  });
 };
 
 function unSubscribeClicked(event) {
   const subscribeButtonId = event.target.id;
-  const blogId = event.target.id.split('#')[1];
-
-  console.log('UnSubscribe clicked', blogId);
+  const blogId = event.target.id.split("#")[1];
 
   postUnSubscribeToBlogById(blogId)
     .then((res) => {
-      console.log(res);
       if (!res.ok) {
         return;
       }
       location.reload();
-
-    }).catch((err) => {
+    })
+    .catch((err) => {
       console.log(err);
-      alert('Unsubscribe Failed');
+      alert("Unsubscribe Failed");
     });
 }
 
@@ -123,14 +113,12 @@ const appendCard = (id, element) => {
 
 // Get the blogs from the server
 window.onload = function () {
-  console.log("onload");
   document.forms["new-blog-form"].addEventListener("submit", (event) => {
-    console.log("submit");
     event.preventDefault();
-    fetch('/api/blogs/', {
+    fetch("/api/blogs/", {
       method: "POST",
       headers: new Headers({
-        'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+        Authorization: "Bearer " + localStorage.getItem("accessToken"),
       }),
       body: new URLSearchParams(new FormData(event.target)),
     })
@@ -147,7 +135,6 @@ window.onload = function () {
         console.log(error);
       });
   });
-
 
   let blogsEndpoint = "/api/blogs/my-blogs";
   fetch(blogsEndpoint, {
@@ -167,7 +154,6 @@ window.onload = function () {
     .then((json) => {
       // check if the json is empty
       if (json.length === 0) {
-        console.log("No blogs found");
         return;
       }
       document.getElementById("empty-placeholder").style.display = "none";
@@ -181,13 +167,13 @@ window.onload = function () {
           title,
           subscriberCount,
           description,
-          blog.id,
+          blog.id
         );
 
         document.getElementById("blog-list").appendChild(element);
         document.getElementById(`edit-btn-${blog.id}`).onclick = () => {
           editBlog(blog.id, description);
-        }
+        };
       });
     });
 };

@@ -1,55 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 
-	<head>
-		<meta charset="UTF-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" href="../../css/style.css">
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-			integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-		<script src="./pages/my-blogs/index.js" defer></script>
-		<title>My Blogs</title>
-	</head>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../../css/style.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="./pages/my-blogs/index.js" defer></script>
+	<script src="../../js/index.js" defer></script>
+	<title>My Blogs</title>
+</head>
 
-	<body>
-		<div id="nav-placeholder" style="all: initial; font-family: inherit;"></div>
+<body>
+	<div id="nav-placeholder" style="all: initial; font-family: inherit;"></div>
 
-		<script src="https://code.jquery.com/jquery-3.3.1.min.js"
-			integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-			integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-			crossorigin="anonymous"></script>
-		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-			integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-			crossorigin="anonymous"></script>
-		<script>
-			$(function () {
-				$("#nav-placeholder").load("../../html/NavBar.html");
-			});
-		</script>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+		integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+		integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+		crossorigin="anonymous"></script>
+	<script>
+		$(function () {
+			$("#nav-placeholder").load("../../html/NavBar.html");
+		});
+	</script>
 
-		<div class="container" id="blog-list">
-			<form id="new-blog-form">
-				<div class="card mt-4">
-					<div class="card-body">
-						<div class="form-group">
-							<label for="description">Description</label>
-							<input type="text" class="form-control" id="description" name="description"
-								placeholder="Description">
-							<button type="submit" class="btn btn-primary">Create new blog</button>
-						</div>
+	<div class="container" id="blog-list">
+		<form id="new-blog-form">
+			<div class="card mt-4">
+				<div class="card-body">
+					<div class="form-group">
+						<label for="description">Description</label>
+						<input type="text" class="form-control" id="description" name="description"
+							placeholder="Description">
+						<br>
+						<button type="submit" class="btn btn-primary">Create new blog</button>
 					</div>
 				</div>
-			</form>
-			<div class="card mt-4" id="empty-placeholder">
-				<div class="card-body">
-					<h4>Looks like there's nothing here</h4>
-					<div class="card-text mb-2">We couldn't find any blogs. Be the first to make a new one!</div>
-				</div>
+			</div>
+		</form>
+		<div class="card mt-4" id="empty-placeholder">
+			<div class="card-body">
+				<h4>Looks like there's nothing here</h4>
+				<div class="card-text mb-2">We couldn't find any blogs. Be the first to make a new one!</div>
 			</div>
 		</div>
+	</div>
 
-	</body>
+</body>
 
 </html>

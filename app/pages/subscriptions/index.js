@@ -17,22 +17,18 @@ const getCardTemplate = (title, subscriberCount, description, blogID) => {
 };
 
 function unSubscribeClicked(event) {
-  const subscribeButtonId = event.target.id;
-  const blogId = event.target.id.split('#')[1];
-
-  console.log('UnSubscribe clicked', blogId);
+  const blogId = event.target.id.split("#")[1];
 
   postUnSubscribeToBlogById(blogId)
     .then((res) => {
-      console.log(res);
       if (!res.ok) {
         return;
       }
       location.reload();
-
-    }).catch((err) => {
+    })
+    .catch((err) => {
       console.log(err);
-      alert('Unsubscribe Failed');
+      alert("Unsubscribe Failed");
     });
 }
 
@@ -44,7 +40,6 @@ const appendCard = (id, element) => {
 
 // Get the blogs from the server
 window.onload = function () {
-  console.log("onload");
   let blogsEndpoint = "/api/subscriptions";
   fetch(blogsEndpoint, {
     headers: new Headers({
@@ -63,7 +58,6 @@ window.onload = function () {
     .then((json) => {
       // check if the json is empty
       if (json.length === 0) {
-        console.log("No blogs found");
         return;
       }
       document.getElementById("empty-placeholder").style.display = "none";
@@ -73,13 +67,11 @@ window.onload = function () {
         let subscriberCount = blog.subscriberCount;
         let description = blog.description;
 
-        console.log({subscribed: blog.subscribed});
-
         let element = getCardTemplate(
           title,
           subscriberCount,
           description,
-          blog.id,
+          blog.id
         );
 
         document.getElementById("blog-list").appendChild(element);

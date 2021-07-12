@@ -14,6 +14,7 @@ db.user = require("./user")(sequelize, Sequelize.DataTypes);
 db.blog = require("./blog")(sequelize, Sequelize.DataTypes);
 db.post = require("./post")(sequelize, Sequelize.DataTypes);
 db.subscription = require("./subscription")(sequelize, Sequelize.DataTypes);
+
 db.user.hasMany(db.blog, {
   foreignKey: "fkUser",
   targetKey: "pkUser",
@@ -27,6 +28,7 @@ db.blog.belongsTo(db.user, {
 db.blog.hasMany(db.subscription, {
   foreignKey: "fkBlog",
   targetKey: "pkBlog",
+  onDelete: "cascade",
 });
 
 db.blog.hasMany(db.post, {
