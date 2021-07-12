@@ -41,4 +41,8 @@ ui.get("/not-found", function (req, res) {
   res.sendFile(path.join(appDir, "pages", "not-found", "index.html"));
 });
 
+ui.get("/my-blogs", function (req, res) {
+  res.sendFile(path.join(appDir, "pages", "my-blogs", "index.html"));
+});
+
 module.exports = ui;
