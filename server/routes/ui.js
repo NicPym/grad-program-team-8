@@ -32,7 +32,6 @@ ui.get("/post/edit", (req, res) => {
   res.sendFile(path.join(appDir, "pages", "post", "index.html"));
 });
 
-module.exports = ui;
 ui.get("/blog-post", (req, res) => {
   res.sendFile(path.join(appDir, "pages", "blog-post", "index.html"));
 });
