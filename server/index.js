@@ -15,7 +15,13 @@ app.use(
   helmet.contentSecurityPolicy({
     useDefaults: true,
     directives: {
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://code.jquery.com", "https://cdnjs.cloudflare.com", "https://stackpath.bootstrapcdn.com"],
+      scriptSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        "https://code.jquery.com",
+        "https://cdnjs.cloudflare.com",
+        "https://stackpath.bootstrapcdn.com",
+      ],
     },
   })
 );
@@ -54,7 +60,7 @@ sequelize
       .listen(port, () => {
         logger.log({
           logger: "info",
-          message: `[Index.js]\tServer listening at http://localhost:${port}.`,
+          message: `[Index.js]\tServer listening at https://localhost:${port}.`,
         });
       });
   })
