@@ -39,11 +39,11 @@ const getFormTemplate = (blogID, description) => {
 const editBlog = (blogID, oldDescription) => {
   console.log("edit blog called with params:", blogID);
   let form = getFormTemplate(blogID, oldDescription);
-  
+
   form.addEventListener("submit", (event) => {
     console.log("submit");
     const description = document.getElementById(`description-${blogID}`).value;
-    console.log("body",{
+    console.log("body", {
       id: blogID,
       description: description
     });
@@ -59,21 +59,21 @@ const editBlog = (blogID, oldDescription) => {
         description: description
       })
     })
-    .then((resp) => {
-      if (!resp.ok) {
-        throw new Error(resp.statusText);
-      }
-      return resp.json();
-    })
-    .then((body) => {
-      console.log(body);
-      location.reload();
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .then((resp) => {
+        if (!resp.ok) {
+          throw new Error(resp.statusText);
+        }
+        return resp.json();
+      })
+      .then((body) => {
+        console.log(body);
+        location.reload();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   });
-  
+
   appendCard(`blog-card-${blogID}`, form);
 };
 
@@ -82,9 +82,17 @@ const deleteBlog = (blogID) => {
     method: "DELETE",
     headers: new Headers({
       'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+      'Content-Type': 'application/json'
     }),
     body: JSON.stringify({ id: blogID })
-  });
+  }).then((resp) => {
+    if (!resp.ok) {
+      throw new Error(resp.statusText)
+    }
+    else {
+      location.reload();
+    }
+  })
 };
 
 function unSubscribeClicked(event) {
@@ -133,7 +141,7 @@ window.onload = function () {
         return resp.json();
       })
       .then((body) => {
-        console.log(body);
+        location.reload();
       })
       .catch((error) => {
         console.log(error);
