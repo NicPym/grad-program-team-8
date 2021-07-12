@@ -43,12 +43,20 @@ sequelize
   .sync({ alter: true })
   // .sync()
   .then(() => {
-    const server = app.listen(port, () => {
-      logger.log({
-        logger: "info",
-        message: `[Index.js]\tServer listening at http://localhost:${port}.`,
+    https
+      .createServer(
+        {
+          key: fs.readFileSync("server.key"),
+          cert: fs.readFileSync("server.cert"),
+        },
+        app
+      )
+      .listen(port, () => {
+        logger.log({
+          logger: "info",
+          message: `[Index.js]\tServer listening at http://localhost:${port}.`,
+        });
       });
-    });
   })
   .catch((error) => {
     logger.log({
